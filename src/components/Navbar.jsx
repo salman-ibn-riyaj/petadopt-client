@@ -9,7 +9,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg">
+    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-[#8ACBD0] bg-background/70 backdrop-blur-lg">
       <header className="flex h-16 items-center justify-between px-6">
         <div className="flex items-center gap-4">
           <button
