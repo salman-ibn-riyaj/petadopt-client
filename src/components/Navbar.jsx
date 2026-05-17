@@ -70,6 +70,7 @@ export function Navbar() {
           </div>
         </div>
       </header>
+      
       {isMenuOpen && (
         <div className="border-t border-separator md:hidden">
           <ul className="flex flex-col gap-2 p-4">
