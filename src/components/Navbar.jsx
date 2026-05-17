@@ -1,7 +1,11 @@
+"use client";
 import { useState } from "react";
-import { Link } from "@heroui/react";
+import { Avatar, Button, Link } from "@heroui/react";
+import DropdownCompo from "./DropdownCompo";
+import Image from "next/image";
+import { DarkLightToggle } from "./DarkLightToggle";
 
-function Navbar() {
+export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -37,28 +41,46 @@ function Navbar() {
               )}
             </svg>
           </button>
-          <div>Logo + PetAdopt</div>
+          <div className="flex items-center gap-1.5">
+            <Avatar>
+              <Avatar.Image alt="petlogo" src={"/petLogo.avif"} />
+            </Avatar>{" "}
+            <h2 className="font-bold">PetAdopt</h2>
+          </div>
         </div>
         <ul className="hidden items-center gap-4 md:flex">
           <li>
-            <Link href="/">Home</Link>
+            <Link className={"no-underline"} href="/">
+              Home
+            </Link>
           </li>
           <li>
-            <Link href="all-pets">Pets</Link>
+            <Link className={"no-underline"} href="all-pets">
+              Pets
+            </Link>
           </li>
         </ul>
+
+        <div className="flex items-center gap-2">
+          <DarkLightToggle></DarkLightToggle>
+          <DropdownCompo></DropdownCompo>
+          <div>
+            <Button className={'mr-1.5'}>Login</Button>
+            <Button>Sign Up</Button>
+          </div>
+        </div>
       </header>
       {isMenuOpen && (
         <div className="border-t border-separator md:hidden">
           <ul className="flex flex-col gap-2 p-4">
             <li>
-              <Link href="#" className="block py-2">
-                Features
+              <Link href="/" className="block py-2">
+                Home
               </Link>
             </li>
             <li>
-              <Link href="#" className="block py-2">
-                Pricing
+              <Link href="all-pets" className="block py-2">
+                All Pets
               </Link>
             </li>
           </ul>
