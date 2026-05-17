@@ -65,12 +65,12 @@ export function Navbar() {
           <DarkLightToggle></DarkLightToggle>
           <DropdownCompo></DropdownCompo>
           <div>
-            <Button className={'mr-1.5'}>Login</Button>
-            <Button>Sign Up</Button>
+            <Button size="sm"  className={'mr-1.5'}>Login</Button>
+            <Button size="sm" >Sign Up</Button>
           </div>
         </div>
       </header>
-      
+
       {isMenuOpen && (
         <div className="border-t border-separator md:hidden">
           <ul className="flex flex-col gap-2 p-4">
