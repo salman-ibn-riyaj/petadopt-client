@@ -4,6 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 
 const AdoptForm = ({ pet }) => {
+  console.log(pet);
   const [message, setMessage] = useState("");
   const [pickupDate, setPickupDate] = useState("");
 
@@ -13,7 +14,31 @@ const AdoptForm = ({ pet }) => {
   console.log(user);
   const handleAdopt = async (e) => {
     e.preventDefault();
-    // POST /requests logic here
+    const formData = new FormData(e.currentTarget);
+    const adoptRequestData = Object.fromEntries(formData.entries());
+    console.log(adoptRequestData);
+
+    const finalData = {
+      petId: pet._id,
+      ...adoptRequestData,
+      status: "Pending",
+      requestDate: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }),
+    };
+    console.log(finalData, "form finaldata");
+
+    const res = await fetch("http://localhost:5001/adopt-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(finalData),
+    });
+    const data = await res.json();
+    console.log(data);
   };
 
   return (
@@ -35,6 +60,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="text"
+            name="petName" // name যুক্ত করা হয়েছে
             value={pet.name}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
@@ -47,6 +73,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="text"
+            name="userName" // name যুক্ত করা হয়েছে
             value={user?.name || ""}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
@@ -59,6 +86,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="email"
+            name="userEmail" // name যুক্ত করা হয়েছে
             value={user?.email || ""}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
@@ -71,6 +99,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="date"
+            name="pickupDate" // name যুক্ত করা হয়েছে
             value={pickupDate}
             onChange={(e) => setPickupDate(e.target.value)}
             required
@@ -83,6 +112,7 @@ const AdoptForm = ({ pet }) => {
             Message to Owner
           </label>
           <textarea
+            name="message" // name যুক্ত করা হয়েছে
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={4}
