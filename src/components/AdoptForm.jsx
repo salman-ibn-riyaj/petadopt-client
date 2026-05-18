@@ -1,14 +1,16 @@
 "use client";
 
-// import { useSession } from "@/lib/auth-client";
-// import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 
 const AdoptForm = ({ pet }) => {
-//   const { data: session } = useSession();
-//   const user = session?.user;
-//   const [message, setMessage] = useState("");
-//   const [pickupDate, setPickupDate] = useState("");
+  const [message, setMessage] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
 
+  const { data: session } = authClient.useSession();
+  console.log(session);
+  const user = session?.user;
+  console.log(user);
   const handleAdopt = async (e) => {
     e.preventDefault();
     // POST /requests logic here
@@ -27,9 +29,10 @@ const AdoptForm = ({ pet }) => {
       </p>
 
       <form onSubmit={handleAdopt} className="flex flex-col gap-4">
-
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Pet Name</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Pet Name
+          </label>
           <input
             type="text"
             value={pet.name}
@@ -39,30 +42,36 @@ const AdoptForm = ({ pet }) => {
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Your Name</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Your Name
+          </label>
           <input
             type="text"
-            // value={user?.name || ""}
+            value={user?.name || ""}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Your Email</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Your Email
+          </label>
           <input
             type="email"
-            // value={user?.email || ""}
+            value={user?.email || ""}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Preferred Pickup Date</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Preferred Pickup Date
+          </label>
           <input
             type="date"
-            // value={pickupDate}
+            value={pickupDate}
             onChange={(e) => setPickupDate(e.target.value)}
             required
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-700 dark:text-gray-200 focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 transition-colors"
@@ -70,9 +79,11 @@ const AdoptForm = ({ pet }) => {
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Message to Owner</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Message to Owner
+          </label>
           <textarea
-            // value={message}
+            value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={4}
             placeholder={`Tell the owner why you'd be a great match for ${pet.name}...`}
