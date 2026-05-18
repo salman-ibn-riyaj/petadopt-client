@@ -1,6 +1,7 @@
 import { signOut } from "@/lib/auth-client";
 import {ArrowRightFromSquare, Gear, Persons} from "@gravity-ui/icons";
 import {Avatar, Button, Dropdown, Label} from "@heroui/react";
+import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 const DropdownCompo = ({user}) => {
@@ -9,7 +10,9 @@ const DropdownCompo = ({user}) => {
   console.log(user);
   return (
     <Dropdown>
-      <Dropdown.Trigger className="rounded-full">
+      
+      <Dropdown.Trigger className="rounded-full flex">
+        <h2 className="flex items-center gap-0.5">{user?.name} <ArrowDown /></h2> 
         <Avatar>
           <Avatar.Image
             alt={user?.name}
@@ -22,16 +25,16 @@ const DropdownCompo = ({user}) => {
       <Dropdown.Popover>
         <div className="px-3 pt-3 pb-1">
           <div className="flex items-center gap-2">
-            <Avatar size="sm">
+            {/* <Avatar size="sm">
               <Avatar.Image
                 alt="Jane"
                 src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
               />
               <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
-            </Avatar>
+            </Avatar> */}
             <div className="flex flex-col gap-0">
-              <p className="text-sm leading-5 font-medium">Jane Doe</p>
-              <p className="text-xs leading-none text-muted">jane@example.com</p>
+              <p className="text-sm leading-5 font-medium">{user?.name}</p>
+              <p className="text-xs leading-none text-muted">{user?.email}</p>
             </div>
           </div>
         </div>

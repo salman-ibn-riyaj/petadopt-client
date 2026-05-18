@@ -4,12 +4,9 @@ import { Avatar, Button, Link } from "@heroui/react";
 import DropdownCompo from "./DropdownCompo";
 import { DarkLightToggle } from "./DarkLightToggle";
 import { authClient } from "@/lib/auth-client";
-
+import { ArrowDown } from "lucide-react";
 
 export function Navbar() {
-
-
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { data: session } = authClient.useSession();
@@ -72,12 +69,7 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <DarkLightToggle></DarkLightToggle>
 
-          {user && (
-            <>
-              <DropdownCompo user={user}></DropdownCompo>
-              
-            </>
-          )}
+          {user && <DropdownCompo user={user}></DropdownCompo>}
 
           {!user && (
             <div>
