@@ -111,7 +111,7 @@ const AddPetPage = () => {
 
       <div className="mb-6">
        
-        <h1 className="text-2xl font-bold text-slate-200">
+        <h1 className="text-2xl font-bold text-purple-500">
           Add a Pet Listing
         </h1>
         <p className="text-xs text-slate-400 mt-1">
