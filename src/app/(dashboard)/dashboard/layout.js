@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@heroui/react";
-import { ToastProvider } from "@heroui/toast"; // ১. সঠিক ইমপোর্ট পাথ ও নাম
+import { ToastProvider } from "@heroui/toast";
 import { useState } from "react";
-import { 
-  MdOutlineContentPaste, 
-  MdOutlinePlaylistAdd, 
+import {
+  MdOutlineContentPaste,
+  MdOutlinePlaylistAdd,
   MdOutlineFormatListBulleted,
   MdLogout,
   MdMenu,
-  MdClose
+  MdClose,
 } from "react-icons/md";
 
 const DashboardLayout = ({ children }) => {
@@ -38,8 +38,6 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0d1117] text-gray-900 dark:text-gray-100 transition-colors">
-      
-      {/* মেইন Navbar */}
       <header className="h-16 fixed top-0 inset-x-0 bg-white dark:bg-[#161b22] border-b border-gray-200 dark:border-[#30363d] flex items-center justify-between px-4 sm:px-6 z-30">
         <div className="flex items-center gap-3">
           <Button
@@ -48,24 +46,28 @@ const DashboardLayout = ({ children }) => {
             className="md:hidden text-gray-600 dark:text-gray-400"
             onClick={() => setIsOpen(!isOpen)}
           >
-            {isOpen ? <MdClose className="text-2xl" /> : <MdMenu className="text-2xl" />}
+            {isOpen ? (
+              <MdClose className="text-2xl" />
+            ) : (
+              <MdMenu className="text-2xl" />
+            )}
           </Button>
-          <h2 className="font-bold text-[#3B7597] dark:text-[#6FD1D7]">Navbar</h2>
+          <h2 className="font-bold text-[#3B7597] dark:text-[#6FD1D7]">
+            Navbar
+          </h2>
         </div>
       </header>
 
       <div className="flex pt-16 min-h-screen">
-        
-        {/* ব্যাকড্রপ ব্লার */}
         {isOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black/40 backdrop-blur-xs z-10 md:hidden"
             onClick={() => setIsOpen(false)}
           />
         )}
 
-        {/* সাইডবার */}
-        <aside className={`w-64 fixed inset-y-0 left-0 pt-16 bg-white dark:bg-[#161b22] border-r border-gray-200 dark:border-[#30363d] flex flex-col justify-between p-4 z-20 transition-transform duration-300 transform 
+        <aside
+          className={`w-64 fixed inset-y-0 left-0 pt-16 bg-white dark:bg-[#161b22] border-r border-gray-200 dark:border-[#30363d] flex flex-col justify-between p-4 z-20 transition-transform duration-300 transform 
           ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
         >
           <div>
@@ -78,9 +80,9 @@ const DashboardLayout = ({ children }) => {
                 const isActive = pathname === item.path;
 
                 return (
-                  <Link 
-                    key={item.path} 
-                    href={item.path} 
+                  <Link
+                    key={item.path}
+                    href={item.path}
                     className="w-full"
                     onClick={() => setIsOpen(false)}
                   >
@@ -111,15 +113,12 @@ const DashboardLayout = ({ children }) => {
           </div>
         </aside>
 
-        {/* মেইন কন্টেন্ট এরিয়া */}
         <main className="flex-1 w-full pl-0 md:pl-64 transition-all duration-300">
           <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
-            {/* ২. সঠিক টোস্ট প্রোভাইডার প্লেসমেন্ট */}
-            <ToastProvider position="top-center" /> 
+            <ToastProvider position="top-center" />
             {children}
           </div>
         </main>
-
       </div>
     </div>
   );
