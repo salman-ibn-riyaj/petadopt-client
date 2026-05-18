@@ -65,8 +65,9 @@ export function Navbar() {
           <DarkLightToggle></DarkLightToggle>
           <DropdownCompo></DropdownCompo>
           <div>
-            <Button size="sm"  className={'mr-1.5'}>Login</Button>
-            <Button size="sm" >Sign Up</Button>
+            <Link className={'no-underline'} href={'/login'}><Button size="sm"  className={'mr-1.5'}>Login</Button></Link>
+            <Link className={'no-underline'} href={'/signup'}><Button size="sm"  className={'mr-1.5'}>Sign Up</Button></Link>
+            
           </div>
         </div>
       </header>
