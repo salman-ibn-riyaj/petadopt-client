@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const PetCard = ({ feature }) => {
+  console.log(feature);
+  const { _id } = feature;
   return (
     <div className="group relative bg-[#EFE3CA]/30 dark:bg-slate-900 rounded-3xl overflow-hidden border border-[#EFE3CA] dark:border-slate-800 transition-all hover:shadow-2xl dark:hover:shadow-cyan-900/20">
       {/* Image Container */}
@@ -32,12 +34,12 @@ const PetCard = ({ feature }) => {
           ${feature.adoptionFee}
         </p>
 
-        <Link href={`/all-pets/:${feature._id}`}>
-      <Button className={'w-full font-bold text-lg'} variant="outline">View Details</Button>
-      </Link>
+        <Link href={`/all-pets/:${_id}`}>
+          <Button className={"w-full font-bold text-lg"} variant="outline">
+            View Details
+          </Button>
+        </Link>
       </div>
-
-      
     </div>
   );
 };
