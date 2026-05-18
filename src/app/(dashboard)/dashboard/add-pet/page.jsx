@@ -1,11 +1,328 @@
+"use client";
 
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const AddPetPage = () => {
-    return (
-        <div>
-            <h2>Add pet</h2>
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  const [toast, setToast] = useState({ show: false, text: "", type: "" });
+
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, text: "", type: "" });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
+  const handleAddPet = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const petData = Object.fromEntries(formData.entries());
+
+    const finalPetData = {
+      name: petData.petName,
+      species: petData.species,
+      breed: petData.breed || "N/A",
+      age: petData.age || "Unknown",
+      gender: petData.gender,
+      vaccinationStatus: petData.vaccinationStatus,
+      image: petData.petImage,
+      healthStatus: petData.healthStatus,
+      location: petData.location,
+      adoptionFee: Number(petData.adoptionFee) || 0,
+      description: petData.description,
+      ownerEmail: user?.email || "unknown",
+      ownerName: user?.name || "Anonymous",
+      status: "Available",
+      requestCount: 0,
+      listedDate: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }),
+    };
+
+    try {
+      const res = await fetch("http://localhost:5001/add-pet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(finalPetData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setToast({
+          show: true,
+          text: "Pet listed successfully!",
+          type: "success",
+        });
+        e.target.reset();
+
+        setTimeout(() => {
+          router.replace("/dashboard/my-listings");
+        }, 1500);
+      } else {
+        setToast({
+          show: true,
+          text: data.message || "Failed to add pet.",
+          type: "error",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setToast({
+        show: true,
+        text: "Failed to connect to server.",
+        type: "error",
+      });
+    }
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto relative pb-10">
+      {toast.show && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
+          {toast.type === "success" ? (
+            <div className="bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-zinc-800 dark:border-zinc-200">
+              <span className="text-emerald-500"></span>
+              <span>{toast.text}</span>
+            </div>
+          ) : (
+            <div className="bg-rose-600 text-white flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-rose-700">
+              <span>{toast.text}</span>
+            </div>
+          )}
         </div>
-    );
+      )}
+
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Add a Pet Listing
+        </h1>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Fill out this form to add a new pet for adoption.
+        </p>
+      </div>
+
+      <form
+        onSubmit={handleAddPet}
+        className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-xl p-5 sm:p-6 flex flex-col gap-4"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Pet Name *
+            </label>
+            <input
+              required
+              type="text"
+              name="petName"
+              placeholder="e.g. Buddy"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Species *
+            </label>
+            <select
+              required
+              name="species"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+            >
+              <option value="" className="bg-white dark:bg-[#0d1117]">
+                Select species
+              </option>
+              <option value="Dog" className="bg-white dark:bg-[#0d1117]">
+                Dog
+              </option>
+              <option value="Cat" className="bg-white dark:bg-[#0d1117]">
+                Cat
+              </option>
+              <option value="Bird" className="bg-white dark:bg-[#0d1117]">
+                Bird
+              </option>
+              <option value="Rabbit" className="bg-white dark:bg-[#0d1117]">
+                Rabbit
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Breed
+            </label>
+            <input
+              type="text"
+              name="breed"
+              placeholder="e.g. Labrador"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Age (years)
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              name="age"
+              placeholder="e.g. 2"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Gender
+            </label>
+            <select
+              name="gender"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+            >
+              <option value="Unknown" className="bg-white dark:bg-[#0d1117]">
+                Select gender
+              </option>
+              <option value="Male" className="bg-white dark:bg-[#0d1117]">
+                Male
+              </option>
+              <option value="Female" className="bg-white dark:bg-[#0d1117]">
+                Female
+              </option>
+            </select>
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Vaccination Status
+            </label>
+            <select
+              name="vaccinationStatus"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+            >
+              <option value="No" className="bg-white dark:bg-[#0d1117]">
+                No
+              </option>
+              <option value="Yes" className="bg-white dark:bg-[#0d1117]">
+                Yes
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Pet Image URL *
+          </label>
+          <input
+            required
+            type="url"
+            name="petImage"
+            placeholder="https://i.ibb.co/..."
+            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Health Status *
+            </label>
+            <select
+              required
+              name="healthStatus"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+            >
+              <option value="" className="bg-white dark:bg-[#0d1117]">
+                Select health status
+              </option>
+              <option value="Good" className="bg-white dark:bg-[#0d1117]">
+                Good
+              </option>
+              <option value="Excellent" className="bg-white dark:bg-[#0d1117]">
+                Excellent
+              </option>
+              <option
+                value="Needs Medical Attention"
+                className="bg-white dark:bg-[#0d1117]"
+              >
+                Needs Medical Attention
+              </option>
+            </select>
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              Location *
+            </label>
+            <input
+              required
+              type="text"
+              name="location"
+              placeholder="e.g. Dhaka, BD"
+              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Adoption Fee ($)
+          </label>
+          <input
+            type="number"
+            name="adoptionFee"
+            defaultValue={0}
+            min={0}
+            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+          />
+        </div>
+
+        <div>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Owner Email
+          </label>
+          <input
+            type="email"
+            value={user?.email || ""}
+            readOnly
+            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            Description *
+          </label>
+          <textarea
+            required
+            name="description"
+            rows={4}
+            placeholder="Tell us something about the pet..."
+            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 resize-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full mt-2 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-rose-500 via-pink-500 to-orange-400 hover:opacity-90 active:scale-[0.98] transition-all shadow-md shadow-pink-100 dark:shadow-none"
+        >
+          Add Pet Listing
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default AddPetPage;
