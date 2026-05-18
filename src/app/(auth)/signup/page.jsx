@@ -45,11 +45,13 @@ export default function SignUpPage() {
     }
   };
 
-  const googleSignIn = async () => {
+  const handleGoogleSignIn = async () => {
     const data = await authClient.signIn.social({
       provider: "google",
     });
   };
+
+
 
   return (
     <div className="w-full min-h-screen px-4 py-8 flex items-center justify-center bg-gray-50 dark:bg-[#0d1117] transition-colors">
@@ -249,7 +251,7 @@ export default function SignUpPage() {
         <Button
           className="w-full rounded-xl text-sm font-semibold border border-gray-200 dark:border-[#30363d] bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-800 active:scale-[0.98] transition-all py-2.5"
           variant="outline"
-          onClick={googleSignIn}
+          onClick={handleGoogleSignIn}
         >
           <FcGoogle className="text-lg" /> Sign In with Google
         </Button>
