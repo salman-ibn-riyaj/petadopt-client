@@ -34,7 +34,7 @@ const AdoptForm = ({ pet }) => {
             type="text"
             value={pet.name}
             readOnly
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 cursor-not-allowed focus:outline-none"
+            className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -44,7 +44,7 @@ const AdoptForm = ({ pet }) => {
             type="text"
             // value={user?.name || ""}
             readOnly
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 cursor-not-allowed focus:outline-none"
+            className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -54,7 +54,7 @@ const AdoptForm = ({ pet }) => {
             type="email"
             // value={user?.email || ""}
             readOnly
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 cursor-not-allowed focus:outline-none"
+            className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
           />
         </div>
 
@@ -65,7 +65,7 @@ const AdoptForm = ({ pet }) => {
             // value={pickupDate}
             onChange={(e) => setPickupDate(e.target.value)}
             required
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 transition-colors"
+            className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-700 dark:text-gray-200 focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 transition-colors"
           />
         </div>
 
@@ -77,13 +77,13 @@ const AdoptForm = ({ pet }) => {
             rows={4}
             placeholder={`Tell the owner why you'd be a great match for ${pet.name}...`}
             required
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 transition-colors resize-none"
+            className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 transition-colors resize-none"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-linear-to-r from-pink-500 to-teal-400 hover:opacity-90 active:scale-[0.98] transition-all"
+          className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400 hover:opacity-90 active:scale-[0.98] transition-all shadow-md shadow-pink-100 dark:shadow-none"
         >
           Adopt {pet.name} 🐾
         </button>

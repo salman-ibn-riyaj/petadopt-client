@@ -34,7 +34,7 @@ const PetCard = ({ feature }) => {
           ${feature.adoptionFee}
         </p>
 
-        <Link href={`/all-pets/:${_id}`}>
+        <Link href={`/all-pets/${_id}`}>
           <Button className={"w-full font-bold text-lg"} variant="outline">
             View Details
           </Button>

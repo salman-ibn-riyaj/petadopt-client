@@ -55,7 +55,7 @@ export function Navbar() {
             </Link>
           </li>
           <li>
-            <Link className={"no-underline"} href="all-pets">
+            <Link className={"no-underline"} href="/all-pets">
               Pets
             </Link>
           </li>
