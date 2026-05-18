@@ -1,22 +1,35 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const AdoptForm = ({ pet }) => {
   console.log(pet);
   const [message, setMessage] = useState("");
   const [pickupDate, setPickupDate] = useState("");
+  const router = useRouter();
+
+ 
+  const [toast, setToast] = useState({ show: false, text: "", type: "" });
 
   const { data: session } = authClient.useSession();
-  console.log(session);
   const user = session?.user;
-  console.log(user);
+
+
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, text: "", type: "" });
+      }, 3000); 
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
   const handleAdopt = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const adoptRequestData = Object.fromEntries(formData.entries());
-    console.log(adoptRequestData);
 
     const finalData = {
       petId: pet._id,
@@ -28,23 +41,67 @@ const AdoptForm = ({ pet }) => {
         day: "numeric",
       }),
     };
-    console.log(finalData, "form finaldata");
 
-    const res = await fetch("http://localhost:5001/adopt-request", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(finalData),
-    });
-    const data = await res.json();
-    console.log(data);
+    try {
+      const res = await fetch("http://localhost:5001/adopt-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(finalData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setToast({
+          show: true,
+          text: "Added successfully!",
+          type: "success",
+        });
+        
+        setTimeout(() => {
+          router.replace("/dashboard/my-requests"); 
+        }, 1500);
+
+      } else {
+        setToast({
+          show: true,
+          text: data.message || "You have already submitted a request!",
+          type: "error",
+        });
+      }
+
+    } catch (err) {
+      console.error(err);
+      setToast({
+        show: true,
+        text: "Failed to connect to server.",
+        type: "error",
+      });
+    }
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-5 sm:p-6 h-fit">
+    <div className="bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-5 sm:p-6 h-fit relative">
+      {toast.show && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
+          {toast.type === "success" ? (
+            <div className="bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-zinc-800 dark:border-zinc-200">
+              <span className="text-emerald-500"></span> 
+              <span>{toast.text}</span>
+            </div>
+          ) : (
+            <div className="bg-rose-600 text-white flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-rose-700">
+              
+              <span>{toast.text}</span>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center gap-2 mb-1">
-        <span className="text-pink-500">🤍</span>
+       
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">
           Request to Adopt {pet.name}
         </h3>
@@ -60,7 +117,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="text"
-            name="petName" // name যুক্ত করা হয়েছে
+            name="petName"
             value={pet.name}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
@@ -73,7 +130,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="text"
-            name="userName" // name যুক্ত করা হয়েছে
+            name="userName"
             value={user?.name || ""}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
@@ -86,7 +143,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="email"
-            name="userEmail" // name যুক্ত করা হয়েছে
+            name="userEmail"
             value={user?.email || ""}
             readOnly
             className="w-full bg-white border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-slate-600 dark:text-gray-300 cursor-not-allowed focus:outline-none"
@@ -99,7 +156,7 @@ const AdoptForm = ({ pet }) => {
           </label>
           <input
             type="date"
-            name="pickupDate" // name যুক্ত করা হয়েছে
+            name="pickupDate"
             value={pickupDate}
             onChange={(e) => setPickupDate(e.target.value)}
             required
@@ -112,7 +169,7 @@ const AdoptForm = ({ pet }) => {
             Message to Owner
           </label>
           <textarea
-            name="message" // name যুক্ত করা হয়েছে
+            name="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={4}
@@ -124,9 +181,9 @@ const AdoptForm = ({ pet }) => {
 
         <button
           type="submit"
-          className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400 hover:opacity-90 active:scale-[0.98] transition-all shadow-md shadow-pink-100 dark:shadow-none"
+          className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-rose-500 via-pink-500 to-orange-400 hover:opacity-90 active:scale-[0.98] transition-all shadow-md shadow-pink-100 dark:shadow-none"
         >
-          Adopt {pet.name} 🐾
+          Adopt {pet.name} 
         </button>
       </form>
     </div>
