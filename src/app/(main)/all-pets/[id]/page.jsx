@@ -1,10 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
 import AdoptForm from "@/components/AdoptForm";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const PetDetailPage = async ({ params }) => {
   const { id } = await params;
-  const res = await fetch(`http://localhost:5001/all-pets/${id}`);
+
+  const {token} = await auth.api.getToken({
+    headers: await headers()
+  });
+  console.log(token);
+
+
+  const res = await fetch(`http://localhost:5001/all-pets/${id}`,{
+    headers:{
+      authorization: `Bearer ${token}` || ''
+    }
+  });
   const pet = await res.json();
 
   const infoFields = [
