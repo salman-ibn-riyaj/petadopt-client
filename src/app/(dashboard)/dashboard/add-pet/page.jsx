@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -48,11 +49,15 @@ const AddPetPage = () => {
       }),
     };
 
+    const { data:tokenData } = await authClient.token()
+    console.log(tokenData, 'tokenData');
+
     try {
       const res = await fetch("http://localhost:5001/add-pet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${tokenData.token}` || ''
         },
         body: JSON.stringify(finalPetData),
       });

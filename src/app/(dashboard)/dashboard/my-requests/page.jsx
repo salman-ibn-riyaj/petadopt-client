@@ -7,13 +7,17 @@ import { MdOutlineRemoveRedEye, MdOutlineCancel } from "react-icons/md";
 import Link from "next/link";
 
 export default function MyRequestsPage() {
+    
   const { data: session, isPending: sessionLoading } = authClient.useSession();
   const user = session?.user;
 
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
+
   useEffect(() => {
+    
     if (!user?.email) return;
 
     fetch(`http://localhost:5001/my-requests?email=${user.email}`)
@@ -29,9 +33,14 @@ export default function MyRequestsPage() {
   }, [user?.email]);
 
   const handleCancel = async (id) => {
+
+    
     
     const proceed = window.confirm("Are you sure you want to cancel this adoption request?");
     if (!proceed) return;
+
+   
+    
 
     try {
       const response = await fetch(`http://localhost:5001/my-requests/${id}`, {
