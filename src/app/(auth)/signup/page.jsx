@@ -19,11 +19,13 @@ import { redirect } from "next/navigation";
 // import { authClient } from "@/lib/auth-client";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignUpPage() {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -31,10 +33,7 @@ export default function SignUpPage() {
     console.log(userData);
 
     const { data, error } = await authClient.signUp.email({
-      name: userData.name, // required
-      email: userData.email, // required
-      password: userData.password, // required
-      image: userData.image,
+      ...userData
     });
 
     if (data) {
@@ -57,8 +56,12 @@ export default function SignUpPage() {
       <Card className="rounded-2xl max-w-xl w-full mx-auto p-4 sm:p-6 md:p-8 border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-md dark:shadow-none">
         <div>
           <div className="text-center space-y-2 my-3 sm:my-5">
-            <h2 className="text-2xl font-bold text-[#3B7597] dark:text-[#6FD1D7]">Create Account</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">short your adventure with wanderlust</p>
+            <h2 className="text-2xl font-bold text-[#3B7597] dark:text-[#6FD1D7]">
+              Create Account
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              short your adoption with PetAdopt
+            </p>
           </div>
         </div>
         <Form
@@ -75,8 +78,13 @@ export default function SignUpPage() {
               return null;
             }}
           >
-            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</Label>
-            <Input placeholder="Enter your name" className="w-full text-gray-800 dark:text-gray-200" />
+            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Name
+            </Label>
+            <Input
+              placeholder="Enter your name"
+              className="w-full text-gray-800 dark:text-gray-200"
+            />
             <FieldError className="text-xs text-rose-500 mt-1" />
           </TextField>
 
@@ -91,19 +99,24 @@ export default function SignUpPage() {
               return null;
             }}
           >
-            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</Label>
-            <Input placeholder="Enter Your Email" className="w-full text-gray-800 dark:text-gray-200" />
+            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Email
+            </Label>
+            <Input
+              placeholder="Enter Your Email"
+              className="w-full text-gray-800 dark:text-gray-200"
+            />
             <FieldError className="text-xs text-rose-500 mt-1" />
           </TextField>
 
           {/* Password Field */}
           <TextField
             isRequired
-            placeholder='Enter Your Password'
+            placeholder="Enter Your Password"
             minLength={6}
             name="password"
             type="password"
-            onChange={(value) => setPasswordValue(value)} 
+            onChange={(value) => setPasswordValue(value)}
             validate={(value) => {
               if (value.length < 6) {
                 return "Password must be at least 6 characters";
@@ -143,7 +156,8 @@ export default function SignUpPage() {
               </InputGroup.Suffix>
             </InputGroup>
             <Description className="text-xs text-gray-400 mt-1">
-              Must be at least 6 characters with 1 uppercase and 1 lowercase letter
+              Must be at least 6 characters with 1 uppercase and 1 lowercase
+              letter
             </Description>
             <FieldError className="text-xs text-rose-500 mt-1" />
           </TextField>
@@ -151,7 +165,7 @@ export default function SignUpPage() {
           {/* Confirm Password Field */}
           <TextField
             isRequired
-            placeholder='Confirm Password'
+            placeholder="Confirm Password"
             name="confirmPassword"
             type="password"
             validate={(value) => {
@@ -172,7 +186,9 @@ export default function SignUpPage() {
               <InputGroup.Suffix className="pr-1">
                 <Button
                   isIconOnly
-                  aria-label={isConfirmVisible ? "Hide password" : "Show password"}
+                  aria-label={
+                    isConfirmVisible ? "Hide password" : "Show password"
+                  }
                   size="sm"
                   variant="ghost"
                   className="text-gray-400 hover:text-[#3B7597] dark:hover:text-[#6FD1D7]"
@@ -190,8 +206,13 @@ export default function SignUpPage() {
           </TextField>
 
           <TextField name="image">
-            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Image</Label>
-            <Input placeholder="Image Url" className="w-full text-gray-800 dark:text-gray-200" />
+            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Image
+            </Label>
+            <Input
+              placeholder="Image Url"
+              className="w-full text-gray-800 dark:text-gray-200"
+            />
             <FieldError className="text-xs text-rose-500 mt-1" />
           </TextField>
 
@@ -207,16 +228,21 @@ export default function SignUpPage() {
           <div className="my-1">
             <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{" "}
-              <Link className="text-[#3B7597] dark:text-[#6FD1D7] font-semibold hover:underline" href={"/login"}>
+              <Link
+                className="text-[#3B7597] dark:text-[#6FD1D7] font-semibold hover:underline"
+                href={"/login"}
+              >
                 Log in
               </Link>
             </p>
           </div>
         </Form>
-        
+
         <div className="flex items-center justify-center gap-3 my-4 w-full">
           <div className="flex-1 border-t border-gray-200 dark:border-zinc-700"></div>
-          <div className="whitespace-nowrap text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">or sign in with</div>
+          <div className="whitespace-nowrap text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+            or sign in with
+          </div>
           <div className="flex-1 border-t border-gray-200 dark:border-zinc-700"></div>
         </div>
 

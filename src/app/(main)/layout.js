@@ -1,10 +1,12 @@
 import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Toast } from "@heroui/react";
 
 const Mainlayout = ({ children }) => {
   return (
     <div>
-        <Navbar></Navbar>
+      <Toast.Provider />
+      <Navbar></Navbar>
       <main>{children}</main>
       <Footer></Footer>
     </div>
