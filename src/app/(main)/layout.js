@@ -6,7 +6,7 @@ const Mainlayout = ({ children }) => {
   return (
     <div>
       <Toast.Provider />
-      <Navbar></Navbar>
+     
       <main>{children}</main>
       <Footer></Footer>
     </div>

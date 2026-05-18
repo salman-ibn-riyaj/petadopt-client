@@ -1,17 +1,22 @@
+import { signOut } from "@/lib/auth-client";
 import {ArrowRightFromSquare, Gear, Persons} from "@gravity-ui/icons";
-import {Avatar, Dropdown, Label} from "@heroui/react";
+import {Avatar, Button, Dropdown, Label} from "@heroui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+const DropdownCompo = ({user}) => {
 
-const DropdownCompo = () => {
+  const router = useRouter();
+  console.log(user);
   return (
     <Dropdown>
       <Dropdown.Trigger className="rounded-full">
         <Avatar>
           <Avatar.Image
-            alt="Junior Garcia"
-            src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+            alt={user?.name}
+            src={user?.image}
+            referrerPolicy="no-referrer"
           />
-          <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
+          <Avatar.Fallback delayMs={600}>{user?.name.charAt(0)}</Avatar.Fallback>
         </Avatar>
       </Dropdown.Trigger>
       <Dropdown.Popover>
@@ -38,7 +43,12 @@ const DropdownCompo = () => {
           
           <Dropdown.Item id="logout" textValue="Logout" variant="danger">
             <div className="flex w-full items-center justify-between gap-2">
-              <Label>Log Out</Label>
+              <Button onClick={async()=>{
+                              await signOut();
+                              router.push('/login')
+              
+              
+                            }} size="sm" variant="danger">LogOut</Button>
               <ArrowRightFromSquare className="size-3.5 text-danger" />
             </div>
           </Dropdown.Item>

@@ -2,14 +2,22 @@
 import { useState } from "react";
 import { Avatar, Button, Link } from "@heroui/react";
 import DropdownCompo from "./DropdownCompo";
-import Image from "next/image";
 import { DarkLightToggle } from "./DarkLightToggle";
+import { authClient } from "@/lib/auth-client";
+
 
 export function Navbar() {
+
+
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  console.log(user);
+
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-[#8ACBD0] bg-background/70 backdrop-blur-lg">
+    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg">
       <header className="flex h-16 items-center justify-between px-6">
         <div className="flex items-center gap-4">
           <button
@@ -63,12 +71,28 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <DarkLightToggle></DarkLightToggle>
-          <DropdownCompo></DropdownCompo>
-          <div>
-            <Link className={'no-underline'} href={'/login'}><Button size="sm"  className={'mr-1.5'}>Login</Button></Link>
-            <Link className={'no-underline'} href={'/signup'}><Button size="sm"  className={'mr-1.5'}>Sign Up</Button></Link>
-            
-          </div>
+
+          {user && (
+            <>
+              <DropdownCompo user={user}></DropdownCompo>
+              
+            </>
+          )}
+
+          {!user && (
+            <div>
+              <Link className={"no-underline"} href={"/login"}>
+                <Button size="sm" className={"mr-1.5"}>
+                  Login
+                </Button>
+              </Link>
+              <Link className={"no-underline"} href={"/signup"}>
+                <Button size="sm" className={"mr-1.5"}>
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 

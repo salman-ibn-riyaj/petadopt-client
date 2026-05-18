@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation"; // useRouter ইম্পোর্ট করলাম
+import { authClient } from "@/lib/auth-client"; // authClient ইম্পোর্ট করলাম
 import { Button } from "@heroui/react";
 import { ToastProvider } from "@heroui/toast";
 import { useState } from "react";
@@ -16,6 +17,7 @@ import {
 
 const DashboardLayout = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter(); // রাউটার ইনিশিয়ালাইজ করলাম
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
@@ -35,6 +37,22 @@ const DashboardLayout = ({ children }) => {
       icon: <MdOutlineFormatListBulleted className="text-xl" />,
     },
   ];
+
+  // 🚪 লগআউট ফাংশন
+  const handleLogout = async () => {
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            // লগআউট সফল হলে লগইন পেজে পাঠিয়ে দেবে এবং ড্যাশবোর্ডের হিস্ট্রি রিফ্লেশ করবে
+            router.replace("/login"); 
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0d1117] text-gray-900 dark:text-gray-100 transition-colors">
@@ -102,10 +120,11 @@ const DashboardLayout = ({ children }) => {
             </nav>
           </div>
 
+          {/* 🛠️ লগআউট বাটন একশন আপডেট */}
           <div className="border-t border-gray-100 dark:border-zinc-800 pt-4">
             <Button
               className="w-full justify-start gap-3 h-11 px-4 font-medium bg-transparent text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all"
-              onClick={() => console.log("Logout clicked")}
+              onClick={handleLogout}
             >
               <MdLogout className="text-xl" />
               Logout
