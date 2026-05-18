@@ -1,10 +1,36 @@
 "use client";
 
-import {ComboBox, Description, Input, Label, ListBox} from "@heroui/react";
+import { ComboBox, Input, Label, ListBox } from "@heroui/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function FilterInput() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+ 
+  const currentSpecies = searchParams.get("species") || "All";
+
+ 
+  const handleSelectionChange = (key) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+  
+    if (key && key !== "All") {
+      params.set("species", key);
+    } else {
+      params.delete("species");
+    }
+
+   
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
   return (
-    <ComboBox className="w-[256px]">
+    <ComboBox 
+      className="w-full sm:w-[256px]"
+      selectedKey={currentSpecies}
+      onSelectionChange={handleSelectionChange}
+    >
       <Label className="font-semibold text-slate-700 dark:text-slate-200">
         Filter by species
       </Label>
@@ -15,11 +41,22 @@ export function FilterInput() {
         />
         <ComboBox.Trigger className="text-slate-500 dark:text-slate-400" />
       </ComboBox.InputGroup>
+      
       <ComboBox.Popover className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
         <ListBox className="text-slate-900 dark:text-slate-100">
           
+        
           <ListBox.Item 
-            id="cat" 
+            id="All" 
+            textValue="All Species" 
+            className="hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+          >
+            All Species
+            <ListBox.ItemIndicator />
+          </ListBox.Item>
+
+          <ListBox.Item 
+            id="Cat" 
             textValue="Cat" 
             className="hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
           >
@@ -28,7 +65,7 @@ export function FilterInput() {
           </ListBox.Item>
 
           <ListBox.Item 
-            id="dog" 
+            id="Dog" 
             textValue="Dog" 
             className="hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
           >
@@ -36,18 +73,20 @@ export function FilterInput() {
             <ListBox.ItemIndicator />
           </ListBox.Item>
           
+       
           <ListBox.Item 
-            id="panda" 
-            textValue="Panda" 
+            id="Bird" 
+            textValue="Bird" 
             className="hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
           >
             Bird
             <ListBox.ItemIndicator />
           </ListBox.Item>
 
+        
           <ListBox.Item 
-            id="snake" 
-            textValue="Snake" 
+            id="Rabbit" 
+            textValue="Rabbit" 
             className="hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
           >
             Rabbit
@@ -55,7 +94,6 @@ export function FilterInput() {
           </ListBox.Item>
         </ListBox>
       </ComboBox.Popover>
-      
     </ComboBox>
   );
 }

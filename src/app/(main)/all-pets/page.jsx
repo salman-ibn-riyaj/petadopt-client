@@ -2,14 +2,23 @@ import { FilterInput } from "@/components/FilterInput";
 import PetCard from "@/components/PetCard";
 import { SearchInput } from "@/components/SearchInput";
 import Sorting from "@/components/Sorting";
-
 import { Search } from "lucide-react";
 
-const FeaturedSection = async () => {
-  // featured data fetching
-  const res = await fetch("http://localhost:5001/all-pets");
+
+const FeaturedSection = async ({ searchParams }) => {
+  
+  
+  const params = await searchParams; 
+  const search = params?.search || "";
+  const species = params?.species || "All";
+  const sort = params?.sort || "";
+
+ 
+  const res = await fetch(
+    `http://localhost:5001/all-pets?search=${search}&species=${species}&sort=${sort}`,
+    { cache: "no-store" }
+  );
   const featured = await res.json();
-  console.log(featured);
 
   return (
     <section className="py-16 md:py-24 px-6 transition-colors duration-500 bg-white dark:bg-slate-950">
@@ -25,8 +34,7 @@ const FeaturedSection = async () => {
           <div className="w-20 h-1.5 bg-[#56B6C6] mx-auto mt-6 rounded-full"></div>
         </div>
 
-        {/* filter and search  */}
-
+        {/* filter and search */}
         <div className="my-6 md:my-12 container mx-auto bg-slate-100 dark:bg-slate-900 shadow-md md:shadow-lg p-4 sm:p-6 md:p-8 rounded-xl w-[95%] lg:w-full border border-transparent dark:border-slate-800 transition-colors duration-300">
           <h2 className="flex items-center gap-1.5 mb-6 text-slate-800 dark:text-slate-100">
             <Search className="w-5 h-5" />
@@ -50,11 +58,17 @@ const FeaturedSection = async () => {
         </div>
 
         {/* Stories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {featured.map((feature) => (
-            <PetCard key={feature._id} feature={feature}></PetCard>
-          ))}
-        </div>
+        {featured.length === 0 ? (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400 font-medium text-lg">
+            No pets found matching your filter criteria. 🐾
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {featured.map((feature) => (
+              <PetCard key={feature._id} feature={feature}></PetCard>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
