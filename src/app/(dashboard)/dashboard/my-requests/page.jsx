@@ -7,17 +7,13 @@ import { MdOutlineRemoveRedEye, MdOutlineCancel } from "react-icons/md";
 import Link from "next/link";
 
 export default function MyRequestsPage() {
-    
   const { data: session, isPending: sessionLoading } = authClient.useSession();
   const user = session?.user;
 
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  
-
   useEffect(() => {
-    
     if (!user?.email) return;
 
     fetch(`http://localhost:5001/my-requests?email=${user.email}`)
@@ -33,24 +29,26 @@ export default function MyRequestsPage() {
   }, [user?.email]);
 
   const handleCancel = async (id) => {
-
-    
-    
-    const proceed = window.confirm("Are you sure you want to cancel this adoption request?");
+    const proceed = window.confirm(
+      "Are you sure you want to cancel this adoption request?",
+    );
     if (!proceed) return;
 
-   
-    
+    const { data: tokenData } = await authClient.token();
+    console.log(tokenData, "tokenData");
 
     try {
       const response = await fetch(`http://localhost:5001/my-requests/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${tokenData.token}`,
+        },
       });
       const data = await response.json();
 
       if (data.success) {
         toast(data.message);
-        
+
         const remainingRequests = requests.filter((req) => req._id !== id);
         setRequests(remainingRequests);
       } else {
@@ -184,14 +182,14 @@ export default function MyRequestsPage() {
                       </Link>
                       {/* Cancel Button */}
                       <Button
-  size="sm"
-  variant="bordered"
-  startContent={<MdOutlineCancel className="text-base" />}
-  className="text-rose-500 border-rose-500/20 hover:bg-rose-500/10 rounded-xl"
-  onClick={() => handleCancel(request._id)} // এখানে ফাংশনটি কল করা হয়েছে
->
-  Cancel
-</Button>
+                        size="sm"
+                        variant="bordered"
+                        startContent={<MdOutlineCancel className="text-base" />}
+                        className="text-rose-500 border-rose-500/20 hover:bg-rose-500/10 rounded-xl"
+                        onClick={() => handleCancel(request._id)} // এখানে ফাংশনটি কল করা হয়েছে
+                      >
+                        Cancel
+                      </Button>
                     </td>
                   </tr>
                 ))
