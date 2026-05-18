@@ -110,21 +110,22 @@ const AddPetPage = () => {
       )}
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+       
+        <h1 className="text-2xl font-bold text-slate-200">
           Add a Pet Listing
         </h1>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs text-slate-400 mt-1">
           Fill out this form to add a new pet for adoption.
         </p>
       </div>
 
       <form
         onSubmit={handleAddPet}
-        className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-xl p-5 sm:p-6 flex flex-col gap-4"
+        className="bg-[#fdfcf7] border border-slate-200 rounded-xl p-5 sm:p-6 flex flex-col gap-4"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Pet Name *
             </label>
             <input
@@ -132,31 +133,31 @@ const AddPetPage = () => {
               type="text"
               name="petName"
               placeholder="e.g. Buddy"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500 placeholder:text-slate-400"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Species *
             </label>
             <select
               required
               name="species"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 text-slate-800"
             >
-              <option value="" className="bg-white dark:bg-[#0d1117]">
+              <option value="" className="bg-[#fdfcf7] text-slate-800">
                 Select species
               </option>
-              <option value="Dog" className="bg-white dark:bg-[#0d1117]">
+              <option value="Dog" className="bg-[#fdfcf7] text-slate-800">
                 Dog
               </option>
-              <option value="Cat" className="bg-white dark:bg-[#0d1117]">
+              <option value="Cat" className="bg-[#fdfcf7] text-slate-800">
                 Cat
               </option>
-              <option value="Bird" className="bg-white dark:bg-[#0d1117]">
+              <option value="Bird" className="bg-[#fdfcf7] text-slate-800">
                 Bird
               </option>
-              <option value="Rabbit" className="bg-white dark:bg-[#0d1117]">
+              <option value="Rabbit" className="bg-[#fdfcf7] text-slate-800">
                 Rabbit
               </option>
             </select>
@@ -165,18 +166,18 @@ const AddPetPage = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Breed
             </label>
             <input
               type="text"
               name="breed"
               placeholder="e.g. Labrador"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500 placeholder:text-slate-400"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Age (years)
             </label>
             <input
@@ -184,43 +185,43 @@ const AddPetPage = () => {
               step="0.1"
               name="age"
               placeholder="e.g. 2"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500 placeholder:text-slate-400"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Gender
             </label>
             <select
               name="gender"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 text-slate-800"
             >
-              <option value="Unknown" className="bg-white dark:bg-[#0d1117]">
+              <option value="Unknown" className="bg-[#fdfcf7] text-slate-800">
                 Select gender
               </option>
-              <option value="Male" className="bg-white dark:bg-[#0d1117]">
+              <option value="Male" className="bg-[#fdfcf7] text-slate-800">
                 Male
               </option>
-              <option value="Female" className="bg-white dark:bg-[#0d1117]">
+              <option value="Female" className="bg-[#fdfcf7] text-slate-800">
                 Female
               </option>
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Vaccination Status
             </label>
             <select
               name="vaccinationStatus"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 text-slate-800"
             >
-              <option value="No" className="bg-white dark:bg-[#0d1117]">
+              <option value="No" className="bg-[#fdfcf7] text-slate-800">
                 No
               </option>
-              <option value="Yes" className="bg-white dark:bg-[#0d1117]">
+              <option value="Yes" className="bg-[#fdfcf7] text-slate-800">
                 Yes
               </option>
             </select>
@@ -228,7 +229,7 @@ const AddPetPage = () => {
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+          <label className="text-xs text-slate-600 mb-1 block">
             Pet Image URL *
           </label>
           <input
@@ -236,39 +237,39 @@ const AddPetPage = () => {
             type="url"
             name="petImage"
             placeholder="https://i.ibb.co/..."
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+            className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500 placeholder:text-slate-400"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Health Status *
             </label>
             <select
               required
               name="healthStatus"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 text-gray-900 dark:text-white"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500 text-slate-800"
             >
-              <option value="" className="bg-white dark:bg-[#0d1117]">
+              <option value="" className="bg-[#fdfcf7] text-slate-800">
                 Select health status
               </option>
-              <option value="Good" className="bg-white dark:bg-[#0d1117]">
+              <option value="Good" className="bg-[#fdfcf7] text-slate-800">
                 Good
               </option>
-              <option value="Excellent" className="bg-white dark:bg-[#0d1117]">
+              <option value="Excellent" className="bg-[#fdfcf7] text-slate-800">
                 Excellent
               </option>
               <option
                 value="Needs Medical Attention"
-                className="bg-white dark:bg-[#0d1117]"
+                className="bg-[#fdfcf7] text-slate-800"
               >
                 Needs Medical Attention
               </option>
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+            <label className="text-xs text-slate-600 mb-1 block">
               Location *
             </label>
             <input
@@ -276,13 +277,13 @@ const AddPetPage = () => {
               type="text"
               name="location"
               placeholder="e.g. Dhaka, BD"
-              className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+              className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500 placeholder:text-slate-400"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+          <label className="text-xs text-slate-600 mb-1 block">
             Adoption Fee ($)
           </label>
           <input
@@ -290,24 +291,24 @@ const AddPetPage = () => {
             name="adoptionFee"
             defaultValue={0}
             min={0}
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400"
+            className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500"
           />
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+          <label className="text-xs text-slate-600 mb-1 block">
             Owner Email
           </label>
           <input
             type="email"
             value={user?.email || ""}
             readOnly
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed focus:outline-none"
+            className="w-full bg-slate-200 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-500 cursor-not-allowed focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+          <label className="text-xs text-slate-600 mb-1 block">
             Description *
           </label>
           <textarea
@@ -315,13 +316,13 @@ const AddPetPage = () => {
             name="description"
             rows={4}
             placeholder="Tell us something about the pet..."
-            className="w-full bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-400 resize-none"
+            className="w-full bg-[#f5f5f0] border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-purple-500 placeholder:text-slate-400 resize-none"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full mt-2 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-rose-500 via-pink-500 to-orange-400 hover:opacity-90 active:scale-[0.98] transition-all shadow-md shadow-pink-100 dark:shadow-none"
+          className="w-full mt-2 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 active:scale-[0.98] transition-all shadow-md"
         >
           Add Pet Listing
         </button>
