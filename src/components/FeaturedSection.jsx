@@ -7,7 +7,7 @@ import ScrollMotion from "./ScrollMotion";
 
 const FeaturedSection = async () => {
   // featured data fetching
-  const res = await fetch("http://localhost:5001/featured");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/featured`);
   const featured = await res.json();
   console.log(featured);
 

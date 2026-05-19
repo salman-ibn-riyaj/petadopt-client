@@ -13,7 +13,7 @@ const PetDetailPage = async ({ params }) => {
   console.log(token);
 
 
-  const res = await fetch(`http://localhost:5001/all-pets/${id}`,{
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/all-pets/${id}`,{
     headers:{
       authorization: `Bearer ${token}` || ''
     }

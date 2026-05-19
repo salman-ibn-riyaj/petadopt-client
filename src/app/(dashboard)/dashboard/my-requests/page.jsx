@@ -17,7 +17,7 @@ export default function MyRequestsPage() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5001/my-requests?email=${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests?email=${user.email}`)
       .then((res) => res.json())
       .then((data) => {
         setRequests(data);
@@ -39,7 +39,7 @@ export default function MyRequestsPage() {
     console.log(tokenData, "tokenData");
 
     try {
-      const response = await fetch(`http://localhost:5001/my-requests/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests/${id}`, {
         method: "DELETE",
         headers: {
           authorization: `Bearer ${tokenData.token}`,

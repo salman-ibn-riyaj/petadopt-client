@@ -15,7 +15,7 @@ const FeaturedSection = async ({ searchParams }) => {
 
  
   const res = await fetch(
-    `http://localhost:5001/all-pets?search=${search}&species=${species}&sort=${sort}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/all-pets?search=${search}&species=${species}&sort=${sort}`,
     { cache: "no-store" }
   );
   const featured = await res.json();

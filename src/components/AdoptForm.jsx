@@ -43,7 +43,7 @@ const AdoptForm = ({ pet }) => {
     };
 
     try {
-      const res = await fetch("http://localhost:5001/adopt-request", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/adopt-request`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

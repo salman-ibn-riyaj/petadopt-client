@@ -4,7 +4,7 @@ import AdoptForm from "@/components/pets/AdoptForm";
 
 const PetDetailPage = async ({ params }) => {
   const { id } = await params;
-  const res = await fetch(`http://localhost:5001/all-pets/${id}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/all-pets/${id}`);
   const pet = await res.json();
 
   const infoFields = [

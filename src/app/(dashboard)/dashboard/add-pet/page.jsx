@@ -54,7 +54,7 @@ const AddPetPage = () => {
     console.log(tokenData, "tokenData");
 
     try {
-      const res = await fetch("http://localhost:5001/add-pet", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-pet`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -324,7 +324,7 @@ const AddPetPage = () => {
 
           <button
             type="submit"
-            className="w-full mt-2 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 active:scale-[0.98] transition-all shadow-md"
+            className="w-full mt-2 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 active:scale-[0.98] transition-all shadow-md"
           >
             Add Pet Listing
           </button>

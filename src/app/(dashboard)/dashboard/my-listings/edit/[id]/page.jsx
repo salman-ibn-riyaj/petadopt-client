@@ -36,7 +36,7 @@ const EditPetPage = () => {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:5001/all-pets/${id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/all-pets/${id}`)
         .then((res) => res.json())
         .then((data) => {
           if (data) {
@@ -89,7 +89,7 @@ const EditPetPage = () => {
     console.log(tokenData, "tokenData");
 
     try {
-      const res = await fetch(`http://localhost:5001/add-pet/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-pet/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

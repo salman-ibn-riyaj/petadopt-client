@@ -30,7 +30,7 @@ const MyListingsPage = () => {
   useEffect(() => {
     const fetchListings = () => {
       if (user?.email) {
-        fetch(`http://localhost:5001/my-listings?email=${user.email}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings?email=${user.email}`)
           .then((res) => res.json())
           .then((data) => {
             setListings(data);
@@ -56,7 +56,7 @@ const MyListingsPage = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5001/add-pet/${selectedPetId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/add-pet/${selectedPetId}`,
         {
           method: "DELETE",
         },
@@ -102,12 +102,12 @@ const MyListingsPage = () => {
           <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
             {toast.type === "success" ? (
               <div className="bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-zinc-800 dark:border-zinc-200">
-                <span className="text-emerald-500">✅</span>
+                
                 <span>{toast.text}</span>
               </div>
             ) : (
               <div className="bg-rose-600 text-white flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-rose-700">
-                <span>⚠️</span>
+               
                 <span>{toast.text}</span>
               </div>
             )}
