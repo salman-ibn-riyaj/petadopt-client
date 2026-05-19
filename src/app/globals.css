@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden; 
+}
+
 :root {
   /* Override any color variable */
   --accent: oklch(0.7 0.25 260);
