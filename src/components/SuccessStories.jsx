@@ -5,7 +5,7 @@ import ScrollMotion from "./ScrollMotion";
 const stories = [
   {
     id: 1,
-    owner: "Jakir",
+    owner: "Jakir with pet Duke",
     story:
       "Denil has completely changed our lives. From a shy shelter cat to the queen of our hearts, adoption was the best decision ever!",
     image:
@@ -13,7 +13,7 @@ const stories = [
   },
   {
     id: 2,
-    owner: "Shakib",
+    owner: "Shakib with pet Naila",
     story:
       "Milo's energy is infectious! He fits right in with our family. PetAdopt made the process so smooth and transparent.",
     image:
@@ -21,7 +21,7 @@ const stories = [
   },
   {
     id: 3,
-    owner: "Nayeem",
+    owner: "Nayeem with pet Luna",
     story:
       "We were looking for a companion for our son, and we found a best friend. Seeing them grow together is pure joy.",
     image:
