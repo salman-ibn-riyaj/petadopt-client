@@ -15,7 +15,7 @@ const DropdownCompo = ({ user }) => {
       await signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.replace("/login");
+            router.push("/login");
           },
         },
       });
@@ -76,7 +76,7 @@ const DropdownCompo = ({ user }) => {
             className="bg-transparent hover:bg-transparent p-0 data-[hover=true]:bg-transparent"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer text-sm font-medium">
-              <span>Logout</span>
+              <span onClick={handleLogout}>Logout</span>
               <ArrowRightFromSquare className="size-3.5" />
             </div>
           </Dropdown.Item>
