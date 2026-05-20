@@ -2,30 +2,34 @@
 
 import { signOut } from "@/lib/auth-client";
 import { ArrowRightFromSquare } from "@gravity-ui/icons";
-import { Avatar, Dropdown } from "@heroui/react";
+import { Avatar } from "@heroui/react"; // শুধু অ্যাভাটার হিরোইউআই থেকে থাকবে
 import { ArrowDown } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const DropdownCompo = ({ user }) => {
-  
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
- 
   if (!user) return null;
 
-  const handleLogout = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
     setIsOpen(false);
-    
     try {
       await signOut({
         fetchOptions: {
           onSuccess: () => {
-      
             window.location.href = "/login";
           },
         },
@@ -36,8 +40,12 @@ const DropdownCompo = ({ user }) => {
   };
 
   return (
-    <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
-      <Dropdown.Trigger className="rounded-full flex cursor-pointer select-none">
+    <div className="relative inline-block text-left" ref={dropdownRef}>
+  
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="rounded-full flex items-center cursor-pointer select-none"
+      >
         <div className="flex items-center gap-1">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
             {user?.name}
@@ -54,39 +62,31 @@ const DropdownCompo = ({ user }) => {
             {user?.name?.charAt(0) || "U"}
           </Avatar.Fallback>
         </Avatar>
-      </Dropdown.Trigger>
+      </div>
 
-      <Dropdown.Popover>
-        <div className="px-3 pt-3 pb-1 border-b border-gray-100 dark:border-zinc-800 mb-1">
-          <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">{user?.email}</p>
+      
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-56 rounded-xl border border-gray-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg z-[9999] focus:outline-none overflow-hidden">
+
+          <div className="px-3 pt-3 pb-1 border-b border-gray-100 dark:border-zinc-800 mb-1">
+            <div className="flex flex-col gap-0.5">
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{user?.email}</p>
+            </div>
           </div>
-        </div>
 
-        <Dropdown.Menu className="p-1">
-          
-    
-          <Dropdown.Item 
-            id="dashboard" 
-            textValue="Dashboard"
-            className="bg-transparent hover:bg-transparent p-0 data-[hover=true]:bg-transparent" 
-            onClick={() => setIsOpen(false)}
-          >
+  
+          <div className="p-1 flex flex-col gap-0.5">
+
             <Link 
               href="/dashboard" 
+              onClick={() => setIsOpen(false)}
               className="inline-block px-3 py-1.5 text-sm rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors w-full"
             >
               Dashboard
             </Link>
-          </Dropdown.Item>
 
-        
-          <Dropdown.Item 
-            id="logout" 
-            textValue="Logout"
-            className="bg-transparent hover:bg-transparent p-0 data-[hover=true]:bg-transparent"
-          >
+      
             <div 
               onClick={handleLogout}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer text-sm font-medium w-full"
@@ -94,10 +94,10 @@ const DropdownCompo = ({ user }) => {
               <span>Logout</span>
               <ArrowRightFromSquare className="size-3.5" />
             </div>
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown.Popover>
-    </Dropdown>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
