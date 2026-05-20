@@ -37,7 +37,7 @@ export default function SignUpPage() {
     });
 
     if (data) {
-      alert("Sign up success!");
+      toast("Sign up success!");
       redirect("/");
     }
     if (error) {

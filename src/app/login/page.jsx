@@ -69,7 +69,7 @@ const LoginPage = () => {
               Email
             </Label>
             <Input
-              placeholder="Enter your name"
+              placeholder="Enter your email"
               className="w-full bg-transparent border-gray-200 focus-within:border-[#3B7597] dark:focus-within:border-[#6FD1D7]"
             />
             <FieldError className="text-xs text-rose-500 mt-1" />
