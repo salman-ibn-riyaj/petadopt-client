@@ -101,7 +101,7 @@ export function Navbar() {
                 All Pets
               </Link>
             </li>
-            <li>
+            {user && <><li>
               <Link href="my-listings" className="block py-2">
                 My Listings
               </Link>
@@ -110,7 +110,7 @@ export function Navbar() {
               <Link href="my-requests" className="block py-2">
                 My Requests
               </Link>
-            </li>
+            </li></>}
           </ul>
         </div>
       )}
