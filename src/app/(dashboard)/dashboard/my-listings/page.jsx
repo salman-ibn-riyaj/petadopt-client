@@ -68,6 +68,10 @@ const MyListingsPage = () => {
     if (!selectedPetId) return;
 
     try {
+
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/add-pet/${selectedPetId}`,
         {
@@ -109,10 +113,14 @@ const MyListingsPage = () => {
     setActionLoading((prev) => ({ ...prev, [petId]: true }));
     try {
  
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+ 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests/${petId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ status: "approved" }),
       });
