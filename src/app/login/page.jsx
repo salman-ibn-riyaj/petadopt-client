@@ -34,7 +34,7 @@ const LoginPage = () => {
     });
 
     if (data) {
-      toast.success("Log in success");
+      toast("Log in success");
     }
     if (error) {
       toast("Log in failed" + error.message);
