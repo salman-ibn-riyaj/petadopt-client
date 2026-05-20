@@ -5,17 +5,28 @@ import { ArrowRightFromSquare } from "@gravity-ui/icons";
 import { Avatar, Dropdown } from "@heroui/react";
 import { ArrowDown } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const DropdownCompo = ({ user }) => {
-  const router = useRouter();
+  
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = async () => {
+ 
+  if (!user) return null;
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    
+    setIsOpen(false);
+    
     try {
       await signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push("/login");
+      
+            window.location.href = "/login";
           },
         },
       });
@@ -25,7 +36,7 @@ const DropdownCompo = ({ user }) => {
   };
 
   return (
-    <Dropdown>
+    <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
       <Dropdown.Trigger className="rounded-full flex cursor-pointer select-none">
         <div className="flex items-center gap-1">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -55,28 +66,32 @@ const DropdownCompo = ({ user }) => {
 
         <Dropdown.Menu className="p-1">
           
+    
           <Dropdown.Item 
             id="dashboard" 
             textValue="Dashboard"
             className="bg-transparent hover:bg-transparent p-0 data-[hover=true]:bg-transparent" 
+            onClick={() => setIsOpen(false)}
           >
             <Link 
               href="/dashboard" 
-              className="inline-block px-3 py-1.5 text-sm rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+              className="inline-block px-3 py-1.5 text-sm rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors w-full"
             >
               Dashboard
             </Link>
           </Dropdown.Item>
 
-          
+        
           <Dropdown.Item 
             id="logout" 
             textValue="Logout"
-            onClick={handleLogout}
             className="bg-transparent hover:bg-transparent p-0 data-[hover=true]:bg-transparent"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer text-sm font-medium">
-              <span onClick={handleLogout}>Logout</span>
+            <div 
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer text-sm font-medium w-full"
+            >
+              <span>Logout</span>
               <ArrowRightFromSquare className="size-3.5" />
             </div>
           </Dropdown.Item>
