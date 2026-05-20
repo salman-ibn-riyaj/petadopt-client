@@ -101,6 +101,16 @@ export function Navbar() {
                 All Pets
               </Link>
             </li>
+            <li>
+              <Link href="my-listings" className="block py-2">
+                My Listings
+              </Link>
+            </li>
+            <li>
+              <Link href="my-requests" className="block py-2">
+                My Requests
+              </Link>
+            </li>
           </ul>
         </div>
       )}
