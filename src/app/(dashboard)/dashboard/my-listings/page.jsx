@@ -7,6 +7,8 @@ import Image from "next/image";
 import ScrollMotion from "@/components/ScrollMotion";
 
 const MyListingsPage = () => {
+
+  
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -29,9 +31,19 @@ const MyListingsPage = () => {
   }, [toast.show]);
 
   useEffect(() => {
-    const fetchListings = () => {
+    const fetchListings = async() => {
+
+      const { data:tokenData } = await authClient.token();
+      console.log(tokenData);
+      const token = tokenData?.token;
+      console.log(token);
+
       if (user?.email) {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings?email=${user.email}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings?email=${user.email}`,{
+          headers:{
+            authorization: `Bearer ${token}`
+          }
+        })
           .then((res) => res.json())
           .then((data) => {
             setListings(data);
@@ -60,6 +72,10 @@ const MyListingsPage = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/add-pet/${selectedPetId}`,
         {
           method: "DELETE",
+          headers:{
+            authorization: `Bearer ${token}`
+          }
+
         },
       );
       const data = await res.json();

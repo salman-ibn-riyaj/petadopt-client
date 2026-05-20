@@ -19,20 +19,43 @@ export default function MyRequestsPage() {
   const [selectedRequestId, setSelectedRequestId] = useState(null);
   const [isCancelLoading, setIsCancelLoading] = useState(false);
 
-  useEffect(() => {
-    if (!user?.email) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests?email=${user.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRequests(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching requests:", err);
-        setLoading(false);
+  useEffect(() => {
+  if (!user?.email) return;
+
+ 
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+
+    
+      const { data: tokenData } = await authClient.token();
+
+      const token = tokenData?.token;
+      console.log(token); 
+
+     
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests?email=${user.email}`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       });
-  }, [user?.email]);
+      
+      const data = await response.json();
+      setRequests(data);
+    } catch (err) {
+      console.error("Error fetching requests:", err);
+      toast("Failed to load requests!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ 
+  fetchRequests();
+
+}, [user?.email]);
 
 
   const handleCancelClick = (id) => {
@@ -199,7 +222,7 @@ export default function MyRequestsPage() {
                   No, Keep it
                 </Button>
                 <Button 
-                  className="bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl px-4 min-w-[110px]" 
+                  className="bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl px-4 min-w-27.5" 
                   onClick={executeDelete}
                   disabled={isCancelLoading}
                 >
