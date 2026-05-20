@@ -107,8 +107,8 @@ export function Navbar() {
               </Link>
             </li>
             <li>
-              <Link href="my-requests" className="block py-2">
-                My Requests
+              <Link href="add-pet" className="block py-2">
+                Add Pet
               </Link>
             </li></>}
           </ul>
