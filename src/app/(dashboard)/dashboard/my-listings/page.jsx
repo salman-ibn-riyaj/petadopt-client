@@ -17,6 +17,7 @@ const MyListingsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState(null);
   const [toast, setToast] = useState({ show: false, text: "", type: "" });
+  const [actionLoading, setActionLoading] = useState({});
 
   useEffect(() => {
     if (toast.show) {
@@ -87,6 +88,49 @@ const MyListingsPage = () => {
     }
   };
 
+
+  const handleApproveClick = async (petId) => {
+    setActionLoading((prev) => ({ ...prev, [petId]: true }));
+    try {
+ 
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests/${petId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "approved" }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setToast({
+          show: true,
+          text: "Pet adoption approved successfully! 🎉",
+          type: "success",
+        });
+
+    
+        setListings(
+          listings.map((pet) =>
+            pet._id === petId ? { ...pet, status: "adopted" } : pet
+          )
+        );
+      } else {
+        setToast({
+          show: true,
+          text: data.message || "Failed to approve request.",
+          type: "error",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setToast({ show: true, text: "Server error occurred.", type: "error" });
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [petId]: false }));
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -102,12 +146,10 @@ const MyListingsPage = () => {
           <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
             {toast.type === "success" ? (
               <div className="bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-zinc-800 dark:border-zinc-200">
-                
                 <span>{toast.text}</span>
               </div>
             ) : (
               <div className="bg-rose-600 text-white flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-rose-700">
-               
                 <span>{toast.text}</span>
               </div>
             )}
@@ -155,7 +197,9 @@ const MyListingsPage = () => {
                     sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                   />
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase bg-emerald-500/90 text-white px-2.5 py-1 rounded-full tracking-wider z-10">
+                  <span className={`absolute top-3 right-3 text-[10px] font-bold uppercase px-2.5 py-1 rounded-full tracking-wider z-10 text-white ${
+                    pet.status === "adopted" ? "bg-zinc-500/90" : "bg-emerald-500/90"
+                  }`}>
                     {pet.status || "Available"}
                   </span>
                   <span className="absolute bottom-3 left-3 text-xs font-bold bg-black/70 backdrop-blur-xs text-white px-2.5 py-1 rounded-lg z-10">
@@ -211,26 +255,46 @@ const MyListingsPage = () => {
                   </div>
                 </div>
 
-                <div className="p-4 pt-0 grid grid-cols-3 gap-2 border-t border-gray-50 dark:border-[#30363d]/50 mt-2">
+       
+                <div className="p-4 pt-0 flex flex-col gap-2 border-t border-gray-50 dark:border-[#30363d]/50 mt-2">
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => router.push(`/all-pets/${pet._id}`)}
+                      className="py-2 bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() =>
+                        router.push(`/dashboard/my-listings/edit/${pet._id}`)
+                      }
+                      className="py-2 bg-gray-50 dark:bg-zinc-800 text-pink-500 text-xs font-semibold rounded-xl hover:bg-pink-50 dark:hover:bg-pink-500/10 transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(pet._id)}
+                      className="py-2 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-semibold rounded-xl hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white transition-all"
+                    >
+                      Delete
+                    </button>
+                  </div>
+
+       
                   <button
-                    onClick={() => router.push(`/all-pets/${pet._id}`)}
-                    className="py-2 bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+                    disabled={pet.status === "adopted" || actionLoading[pet._id]}
+                    onClick={() => handleApproveClick(pet._id)}
+                    className={`w-full py-2.5 text-xs font-bold rounded-xl transition-all shadow-xs ${
+                      pet.status === "adopted"
+                        ? "bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-500 cursor-not-allowed"
+                        : "bg-emerald-500 text-white hover:bg-emerald-600"
+                    }`}
                   >
-                    View
-                  </button>
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/my-listings/edit/${pet._id}`)
-                    }
-                    className="py-2 bg-gray-50 dark:bg-zinc-800 text-pink-500 text-xs font-semibold rounded-xl hover:bg-pink-50 dark:hover:bg-pink-500/10 transition-colors"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(pet._id)}
-                    className="py-2 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-semibold rounded-xl hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white transition-all"
-                  >
-                    Delete
+                    {actionLoading[pet._id]
+                      ? "Processing..."
+                      : pet.status === "adopted"
+                      ? "Already Adopted"
+                      : "✓ Approve Adoption"}
                   </button>
                 </div>
               </div>
