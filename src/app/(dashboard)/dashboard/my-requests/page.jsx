@@ -96,9 +96,9 @@ export default function MyRequestsPage() {
   };
 
   const totalRequests = requests.length;
-  const pendingRequests = requests.filter((r) => r.status === "Pending").length;
-  const approvedRequests = requests.filter((r) => r.status === "Approved").length;
-  const rejectedRequests = requests.filter((r) => r.status === "Rejected").length;
+  const pendingRequests = requests.filter((r) => r.status === "pending").length;
+  const approvedRequests = requests.filter((r) => r.status === "approved").length;
+  const rejectedRequests = requests.filter((r) => r.status === "rejected").length;
 
   if (sessionLoading || loading) {
     return (

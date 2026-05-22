@@ -7,8 +7,6 @@ import Image from "next/image";
 import ScrollMotion from "@/components/ScrollMotion";
 
 const MyListingsPage = () => {
-
-  
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -16,8 +14,15 @@ const MyListingsPage = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState(null);
+  
+
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [activeRequest, setActiveRequest] = useState(null);
+  const [requestLoading, setRequestLoading] = useState(false);
+
   const [toast, setToast] = useState({ show: false, text: "", type: "" });
   const [actionLoading, setActionLoading] = useState({});
 
@@ -30,45 +35,42 @@ const MyListingsPage = () => {
     }
   }, [toast.show]);
 
-  useEffect(() => {
-    const fetchListings = async() => {
 
-      const { data:tokenData } = await authClient.token();
-      console.log(tokenData);
-      const token = tokenData?.token;
-      console.log(token);
+  const fetchListings = async () => {
+    const { data: tokenData } = await authClient.token();
+    const token = tokenData?.token;
 
-      if (user?.email) {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings?email=${user.email}`,{
-          headers:{
-            authorization: `Bearer ${token}`
-          }
+    if (user?.email) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-listings?email=${user.email}`, {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setListings(data);
+          setLoading(false);
         })
-          .then((res) => res.json())
-          .then((data) => {
-            setListings(data);
-            setLoading(false);
-          })
-          .catch((err) => {
-            console.error(err);
-            setLoading(false);
-          });
-      }
-    };
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
+    }
+  };
 
+  useEffect(() => {
     fetchListings();
   }, [user?.email]);
 
+  
   const handleDeleteClick = (id) => {
     setSelectedPetId(id);
-    setIsModalOpen(true);
+    setIsDeleteModalOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     if (!selectedPetId) return;
-
     try {
-
       const { data: tokenData } = await authClient.token();
       const token = tokenData?.token;
 
@@ -76,10 +78,9 @@ const MyListingsPage = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/add-pet/${selectedPetId}`,
         {
           method: "DELETE",
-          headers:{
+          headers: {
             authorization: `Bearer ${token}`
           }
-
         },
       );
       const data = await res.json();
@@ -90,7 +91,6 @@ const MyListingsPage = () => {
           text: "Listing deleted successfully! 🗑️",
           type: "success",
         });
-
         setListings(listings.filter((pet) => pet._id !== selectedPetId));
       } else {
         setToast({
@@ -103,26 +103,65 @@ const MyListingsPage = () => {
       console.error(err);
       setToast({ show: true, text: "Server error occurred.", type: "error" });
     } finally {
-      setIsModalOpen(false);
+      setIsDeleteModalOpen(false);
       setSelectedPetId(null);
     }
   };
 
 
-  const handleApproveClick = async (petId) => {
-    setActionLoading((prev) => ({ ...prev, [petId]: true }));
+  const handleApproveButtonClick = async (pet) => {
+    setSelectedPetId(pet._id);
+    setIsRequestModalOpen(true);
+    setRequestLoading(true);
+    setActiveRequest(null);
+
     try {
- 
       const { data: tokenData } = await authClient.token();
       const token = tokenData?.token;
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet-request-details/${pet._id}`, {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        
+        setActiveRequest({ ...data, petName: pet.name });
+      } else {
+        setToast({
+          show: true,
+          text: data.message || "No specific request found for this pet.",
+          type: "error",
+        });
+        setIsRequestModalOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+      setToast({ show: true, text: "Failed to load request details.", type: "error" });
+      setIsRequestModalOpen(false);
+    } finally {
+      setRequestLoading(false);
+    }
+  };
+
  
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests/${petId}`, {
+  const handleRequestAction = async (statusAction) => {
+    if (!selectedPetId) return;
+    setActionLoading((prev) => ({ ...prev, [selectedPetId]: true }));
+    
+    try {
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests/${selectedPetId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ status: "approved" }),
+        body: JSON.stringify({ status: statusAction }),
       });
 
       const data = await res.json();
@@ -130,20 +169,20 @@ const MyListingsPage = () => {
       if (res.ok && data.success) {
         setToast({
           show: true,
-          text: "Pet adoption approved successfully! 🎉",
+          text: `Request has been ${statusAction} successfully! 🎉`,
           type: "success",
         });
 
-    
+     
         setListings(
           listings.map((pet) =>
-            pet._id === petId ? { ...pet, status: "adopted" } : pet
+            pet._id === selectedPetId ? { ...pet, status: statusAction === "approved" ? "adopted" : "Available" } : pet
           )
         );
       } else {
         setToast({
           show: true,
-          text: data.message || "Failed to approve request.",
+          text: data.message || "Failed to update action.",
           type: "error",
         });
       }
@@ -151,7 +190,10 @@ const MyListingsPage = () => {
       console.error(err);
       setToast({ show: true, text: "Server error occurred.", type: "error" });
     } finally {
-      setActionLoading((prev) => ({ ...prev, [petId]: false }));
+      setActionLoading((prev) => ({ ...prev, [selectedPetId]: false }));
+      setIsRequestModalOpen(false);
+      setSelectedPetId(null);
+      setActiveRequest(null);
     }
   };
 
@@ -212,10 +254,7 @@ const MyListingsPage = () => {
               >
                 <div className="relative h-48 w-full bg-gray-100 dark:bg-zinc-800 overflow-hidden">
                   <Image
-                    src={
-                      pet.image ||
-                      "https://images.unsplash.com/photo-1543466835-00a7907e9de1"
-                    }
+                    src={pet.image || "https://images.unsplash.com/photo-1543466835-00a7907e9de1"}
                     alt={pet.name}
                     fill
                     sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
@@ -265,13 +304,7 @@ const MyListingsPage = () => {
                       <span className="text-gray-400">🛡️</span>
                       <span>
                         Vaccinated:{" "}
-                        <strong
-                          className={
-                            pet.vaccinationStatus === "Yes"
-                              ? "text-emerald-500"
-                              : "text-amber-500"
-                          }
-                        >
+                        <strong className={pet.vaccinationStatus === "Yes" ? "text-emerald-500" : "text-amber-500"}>
                           {pet.vaccinationStatus}
                         </strong>
                       </span>
@@ -279,7 +312,6 @@ const MyListingsPage = () => {
                   </div>
                 </div>
 
-       
                 <div className="p-4 pt-0 flex flex-col gap-2 border-t border-gray-50 dark:border-[#30363d]/50 mt-2">
                   <div className="grid grid-cols-3 gap-2">
                     <button
@@ -289,9 +321,7 @@ const MyListingsPage = () => {
                       View
                     </button>
                     <button
-                      onClick={() =>
-                        router.push(`/dashboard/my-listings/edit/${pet._id}`)
-                      }
+                      onClick={() => router.push(`/dashboard/my-listings/edit/${pet._id}`)}
                       className="py-2 bg-gray-50 dark:bg-zinc-800 text-pink-500 text-xs font-semibold rounded-xl hover:bg-pink-50 dark:hover:bg-pink-500/10 transition-colors"
                     >
                       Edit
@@ -304,10 +334,10 @@ const MyListingsPage = () => {
                     </button>
                   </div>
 
-       
+                 
                   <button
                     disabled={pet.status === "adopted" || actionLoading[pet._id]}
-                    onClick={() => handleApproveClick(pet._id)}
+                    onClick={() => handleApproveButtonClick(pet)}
                     className={`w-full py-2.5 text-xs font-bold rounded-xl transition-all shadow-xs ${
                       pet.status === "adopted"
                         ? "bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-500 cursor-not-allowed"
@@ -318,7 +348,7 @@ const MyListingsPage = () => {
                       ? "Processing..."
                       : pet.status === "adopted"
                       ? "Already Adopted"
-                      : "✓ Approve Adoption"}
+                      : "✓ Check Adoption Requests"}
                   </button>
                 </div>
               </div>
@@ -326,32 +356,27 @@ const MyListingsPage = () => {
           </div>
         )}
 
-        {isModalOpen && (
+        
+        {isDeleteModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
             <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl w-full max-w-sm p-6 shadow-xl animate-in zoom-in-95 duration-200">
               <div className="text-center">
-                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-500/10 text-rose-600 mb-4 text-xl">
-                  ⚠️
-                </span>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                  Are you sure?
-                </h3>
+                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-500/10 text-rose-600 mb-4 text-xl">⚠️</span>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Are you sure?</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-2">
-                  Do you really want to delete this pet listing? This action
-                  cannot be undone.
+                  Do you really want to delete this pet listing? This action cannot be undone.
                 </p>
               </div>
-
               <div className="flex gap-3 mt-6">
                 <button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => setIsDeleteModalOpen(false)}
                   className="flex-1 py-2.5 border border-gray-200 dark:border-[#30363d] rounded-xl text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
                 >
                   No, Cancel
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  className="flex-1 py-2.5 bg-rose-600 text-white rounded-xl text-xs font-bold hover:bg-rose-700 transition-colors shadow-sm shadow-rose-100 dark:shadow-none"
+                  className="flex-1 py-2.5 bg-rose-600 text-white rounded-xl text-xs font-bold hover:bg-rose-700 transition-colors shadow-sm"
                 >
                   Yes, Delete
                 </button>
@@ -359,6 +384,109 @@ const MyListingsPage = () => {
             </div>
           </div>
         )}
+
+
+        {isRequestModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl w-full max-w-md p-6 shadow-xl animate-in zoom-in-95 duration-200">
+              
+              <div className="flex justify-between items-center border-b border-gray-100 dark:border-[#30363d] pb-3 mb-4">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Adoption Request Details
+                </h3>
+                <button 
+                  onClick={() => { setIsRequestModalOpen(false); setActiveRequest(null); }}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {requestLoading ? (
+                <div className="flex flex-col justify-center items-center py-10 gap-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500"></div>
+                  <p className="text-xs text-gray-400">Loading request data...</p>
+                </div>
+              ) : activeRequest ? (
+                <div>
+             
+                  <div className="mb-4">
+                    <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Pet Title</label>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">
+                      {activeRequest.petName || "Adopt Request Target"}
+                    </p>
+                  </div>
+
+              
+                  <div className="grid grid-cols-2 gap-4 mb-4 bg-gray-50 dark:bg-zinc-800/40 p-3 rounded-xl border border-gray-100 dark:border-[#30363d]/40">
+                    <div>
+                      <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Requested By</label>
+                      <p className="text-xs font-medium text-gray-800 dark:text-gray-200 mt-0.5 truncate">
+                        {activeRequest.userName || activeRequest.name || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Email Address</label>
+                      <p className="text-xs font-medium text-gray-800 dark:text-gray-200 mt-0.5 truncate" title={activeRequest.userEmail}>
+                        {activeRequest.userEmail || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+
+                
+                  <div className="mb-4">
+                    <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Proposed Pickup Date</label>
+                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-700 dark:text-gray-300 font-semibold bg-pink-500/5 border border-pink-500/20 px-3 py-2 rounded-xl w-fit">
+                      <span>📅</span>
+                      <span>{activeRequest.pickupDate || "Not Specified"}</span>
+                    </div>
+                  </div>
+
+                 
+                  <div className="mb-6">
+                    <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block mb-1">Current Status</label>
+                    <span className={`text-[11px] font-bold uppercase px-3 py-1 rounded-full tracking-wide ${
+                      activeRequest.status === "approved" ? "bg-emerald-500/20 text-emerald-500" :
+                      activeRequest.status === "rejected" ? "bg-rose-500/20 text-rose-500" : "bg-amber-500/20 text-amber-500"
+                    }`}>
+                      {activeRequest.status || "Pending"}
+                    </span>
+                  </div>
+
+              
+                  {activeRequest.status !== "approved" && activeRequest.status !== "rejected" ? (
+                    <div className="flex gap-3 border-t border-gray-100 dark:border-[#30363d] pt-4">
+                      <button
+                        onClick={() => handleRequestAction("rejected")}
+                        className="flex-1 py-2.5 border border-rose-200 dark:border-rose-900/30 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-50 dark:hover:bg-rose-500/5 transition-colors"
+                      >
+                        Reject Request
+                      </button>
+                      <button
+                        onClick={() => handleRequestAction("approved")}
+                        className="flex-1 py-2.5 bg-emerald-500 text-white rounded-xl text-xs font-bold hover:bg-emerald-600 transition-colors shadow-sm"
+                      >
+                        Approve Request
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-t border-gray-100 dark:border-[#30363d] pt-3 text-center">
+                      <p className="text-xs text-gray-400 italic">
+                        This request has already been processed. Action controls are frozen.
+                      </p>
+                    </div>
+                  )}
+
+                </div>
+              ) : (
+                <p className="text-xs text-center text-rose-500 py-4">
+                  Failed to resolve metadata. Please try again.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
       </div>
     </ScrollMotion>
   );

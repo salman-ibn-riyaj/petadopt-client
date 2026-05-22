@@ -7,14 +7,13 @@ import { headers } from "next/headers";
 const PetDetailPage = async ({ params }) => {
   const { id } = await params;
 
-  const {token} = await auth.api.getToken({
+  const { token } = await auth.api.getToken({
     headers: await headers()
   });
   console.log(token);
 
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/all-pets/${id}`,{
-    headers:{
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/all-pets/${id}`, {
+    headers: {
       authorization: `Bearer ${token}` || ''
     }
   });
@@ -31,6 +30,9 @@ const PetDetailPage = async ({ params }) => {
     { icon: "💉", label: "Vaccinated", value: pet.vaccinated ? "Yes" : "No" },
   ];
 
+  
+  const isAdopted = pet.status === "adopted" || pet.adopted === true;
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0d1117] text-gray-900 dark:text-gray-100 px-4 py-6 sm:px-6 md:px-10 lg:px-20">
       <Link
@@ -41,7 +43,7 @@ const PetDetailPage = async ({ params }) => {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-        {/* LEFT — Pet Info */}
+    
         <div>
           <div className="relative w-full h-56 sm:h-72 md:h-80 rounded-2xl overflow-hidden mb-5">
             <Image
@@ -52,8 +54,11 @@ const PetDetailPage = async ({ params }) => {
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
-            <span className="absolute top-3 right-3 bg-teal-500 text-white text-xs font-medium px-3 py-1 rounded-full z-10">
-              Available
+        
+            <span className={`absolute top-3 right-3 text-white text-xs font-medium px-3 py-1 rounded-full z-10 ${
+              isAdopted ? "bg-zinc-500" : "bg-teal-500"
+            }`}>
+              {isAdopted ? "Adopted" : "Available"}
             </span>
           </div>
 
@@ -109,8 +114,30 @@ const PetDetailPage = async ({ params }) => {
           </div>
         </div>
 
-        {/* RIGHT — Adopt Form */}
-        <AdoptForm pet={pet} />
+  
+        {isAdopted ? (
+          <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center h-fit shadow-xs border-t-4 border-t-zinc-400 dark:border-t-zinc-600 animate-in fade-in duration-300">
+            <div className="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800/50 flex items-center justify-center text-2xl mb-4 shadow-inner">
+              🎉
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Already Adopted!
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed">
+              {pet.name} has successfully found a loving home. The adoption form is closed for this listing. Thank you for your interest!
+            </p>
+            <div className="mt-6 w-full pt-5 border-t border-gray-100 dark:border-[#30363d]/60 flex flex-col gap-2">
+              <Link 
+                href="/all-pets"
+                className="w-full py-2.5 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-xl transition-colors text-center"
+              >
+                Explore Other Pets
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <AdoptForm pet={pet} />
+        )}
       </div>
     </div>
   );
