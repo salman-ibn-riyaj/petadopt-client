@@ -4,8 +4,12 @@ import AdoptForm from "@/components/AdoptForm";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-const PetDetailPage = async ({ params }) => {
+const PetDetailPage = async ({ params, searchParams }) => {
   const { id } = await params;
+  
+ 
+  const resolvedSearchParams = await searchParams;
+  const isRequestSubmitted = resolvedSearchParams?.success === "true";
 
   const { token } = await auth.api.getToken({
     headers: await headers()
@@ -30,7 +34,6 @@ const PetDetailPage = async ({ params }) => {
     { icon: "💉", label: "Vaccinated", value: pet.vaccinated ? "Yes" : "No" },
   ];
 
-  
   const isAdopted = pet.status === "adopted" || pet.adopted === true;
 
   return (
@@ -51,7 +54,7 @@ const PetDetailPage = async ({ params }) => {
               alt={pet?.name}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-w: 768px) 100vw, 50vw"
               priority
             />
         
@@ -114,7 +117,7 @@ const PetDetailPage = async ({ params }) => {
           </div>
         </div>
 
-  
+       
         {isAdopted ? (
           <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center h-fit shadow-xs border-t-4 border-t-zinc-400 dark:border-t-zinc-600 animate-in fade-in duration-300">
             <div className="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800/50 flex items-center justify-center text-2xl mb-4 shadow-inner">
@@ -132,6 +135,49 @@ const PetDetailPage = async ({ params }) => {
                 className="w-full py-2.5 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-xl transition-colors text-center"
               >
                 Explore Other Pets
+              </Link>
+            </div>
+          </div>
+        ) : isRequestSubmitted ? (
+         
+          <div className="bg-white dark:bg-[#161b22] border border-emerald-100 dark:border-emerald-500/20 rounded-3xl p-6 sm:p-10 flex flex-col items-center text-center h-fit shadow-md border-b-8 border-b-emerald-500 animate-in zoom-in-95 duration-300 relative overflow-hidden group">
+           
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-teal-500 via-emerald-500 to-emerald-400"></div>
+            
+        
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-500/10 dark:to-teal-500/5 flex items-center justify-center mb-6 shadow-xs border border-emerald-200/50 dark:border-emerald-500/20 transform group-hover:rotate-6 transition-transform duration-300">
+              <span className="text-3xl drop-shadow-sm animate-bounce">✉️</span>
+            </div>
+
+         
+            <h3 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+              Application Dispatched!
+            </h3>
+            
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold tracking-wider uppercase mt-1 px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-md">
+              Awaiting Host Review
+            </p>
+
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm leading-relaxed mt-4">
+              Your adoption portfolio for <strong className="text-gray-800 dark:text-gray-200">{pet.name}</strong> has been successfully archived. The profile caretaker will process your details via secure pipeline.
+            </p>
+
+           
+            <div className="w-full border-t border-dashed border-gray-200 dark:border-[#30363d] my-6"></div>
+
+       
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link 
+                href="/dashboard/my-requests"
+                className="w-full py-3 bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-100 text-xs font-extrabold rounded-xl transition-all shadow-xs text-center flex items-center justify-center gap-1.5"
+              >
+                📊 View My Requests
+              </Link>
+              <Link 
+                href="/all-pets"
+                className="w-full py-3 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-xl transition-colors text-center flex items-center justify-center"
+              >
+                Browse Catalog
               </Link>
             </div>
           </div>

@@ -10,12 +10,10 @@ const AdoptForm = ({ pet }) => {
   const [pickupDate, setPickupDate] = useState("");
   const router = useRouter();
 
- 
   const [toast, setToast] = useState({ show: false, text: "", type: "" });
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
-
 
   useEffect(() => {
     if (toast.show) {
@@ -60,8 +58,9 @@ const AdoptForm = ({ pet }) => {
           type: "success",
         });
         
+
         setTimeout(() => {
-          router.replace("/dashboard/my-requests"); 
+          router.replace(`/all-pets/${pet._id}?success=true`); 
         }, 1500);
 
       } else {
@@ -93,7 +92,6 @@ const AdoptForm = ({ pet }) => {
             </div>
           ) : (
             <div className="bg-rose-600 text-white flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold border border-rose-700">
-              
               <span>{toast.text}</span>
             </div>
           )}
@@ -101,7 +99,6 @@ const AdoptForm = ({ pet }) => {
       )}
 
       <div className="flex items-center gap-2 mb-1">
-       
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">
           Request to Adopt {pet.name}
         </h3>
