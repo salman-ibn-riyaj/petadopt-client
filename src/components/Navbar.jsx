@@ -4,14 +4,19 @@ import { Avatar, Button, Link } from "@heroui/react";
 import DropdownCompo from "./DropdownCompo";
 import { DarkLightToggle } from "./DarkLightToggle";
 import { authClient } from "@/lib/auth-client";
-import { ArrowDown } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
+  const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
   console.log(user);
+
+  // Secure route dynamic match condition check
+  const isHomeActive = pathName === "/";
+  const isAllPetsActive = pathName === "/all-pets";
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg">
@@ -53,14 +58,32 @@ export function Navbar() {
             <h2 className="font-bold">PetAdopt</h2>
           </div>
         </div>
-        <ul className="hidden items-center gap-4 md:flex">
+
+        {/* Desktop Navigation Links */}
+        <ul className="hidden items-center gap-6 md:flex m-0 p-0 list-none">
           <li>
-            <Link className={"no-underline"} href="/">
+            <Link 
+              color="foreground"
+              href="/" 
+              className={`no-underline transition-all text-sm ${
+                isHomeActive 
+                  ? "font-black underline underline-offset-4 decoration-cyan-500 text-cyan-500! dark:text-cyan-400!" 
+                  : "font-medium text-gray-500 dark:text-gray-400 hover:text-cyan-500"
+              }`}
+            >
               Home
             </Link>
           </li>
           <li>
-            <Link className={"no-underline"} href="/all-pets">
+            <Link 
+              color="foreground"
+              href="/all-pets" 
+              className={`no-underline transition-all text-sm ${
+                isAllPetsActive 
+                  ? "font-black underline underline-offset-4 decoration-cyan-500 text-cyan-500! dark:text-cyan-400!" 
+                  : "font-medium text-gray-500 dark:text-gray-400 hover:text-cyan-500"
+              }`}
+            >
               Pets
             </Link>
           </li>
@@ -88,29 +111,50 @@ export function Navbar() {
         </div>
       </header>
 
+      {/* Mobile Sidebar Menu */}
       {isMenuOpen && (
         <div className="border-t border-separator md:hidden">
-          <ul className="flex flex-col gap-2 p-4">
+          <ul className="flex flex-col gap-2 p-4 list-none">
             <li>
-              <Link href="/" className="block py-2">
+              <Link 
+                color="foreground"
+                href="/" 
+                className={`block py-2 text-sm ${isHomeActive ? "font-bold text-cyan-500" : ""}`}
+              >
                 Home
               </Link>
             </li>
             <li>
-              <Link href="all-pets" className="block py-2">
+              <Link 
+                color="foreground"
+                href="/all-pets" 
+                className={`block py-2 text-sm ${isAllPetsActive ? "font-bold text-cyan-500" : ""}`}
+              >
                 All Pets
               </Link>
             </li>
-            {user && <><li>
-              <Link href="my-listings" className="block py-2">
-                My Listings
-              </Link>
-            </li>
-            <li>
-              <Link href="add-pet" className="block py-2">
-                Add Pet
-              </Link>
-            </li></>}
+            {user && (
+              <>
+                <li>
+                  <Link 
+                    color="foreground"
+                    href="/dashboard/my-listings" 
+                    className="block py-2 text-sm text-gray-600 dark:text-gray-300"
+                  >
+                    My Listings
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    color="foreground"
+                    href="/dashboard/add-pet" 
+                    className="block py-2 text-sm text-gray-600 dark:text-gray-300"
+                  >
+                    Add Pet
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       )}
