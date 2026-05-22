@@ -14,10 +14,8 @@ const MyListingsPage = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState(null);
-  
 
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [activeRequest, setActiveRequest] = useState(null);
@@ -34,7 +32,6 @@ const MyListingsPage = () => {
       return () => clearTimeout(timer);
     }
   }, [toast.show]);
-
 
   const fetchListings = async () => {
     const { data: tokenData } = await authClient.token();
@@ -62,7 +59,6 @@ const MyListingsPage = () => {
     fetchListings();
   }, [user?.email]);
 
-  
   const handleDeleteClick = (id) => {
     setSelectedPetId(id);
     setIsDeleteModalOpen(true);
@@ -108,7 +104,6 @@ const MyListingsPage = () => {
     }
   };
 
-
   const handleApproveButtonClick = async (pet) => {
     setSelectedPetId(pet._id);
     setIsRequestModalOpen(true);
@@ -127,7 +122,6 @@ const MyListingsPage = () => {
       const data = await res.json();
 
       if (res.ok) {
-        
         setActiveRequest({ ...data, petName: pet.name });
       } else {
         setToast({
@@ -146,7 +140,6 @@ const MyListingsPage = () => {
     }
   };
 
- 
   const handleRequestAction = async (statusAction) => {
     if (!selectedPetId) return;
     setActionLoading((prev) => ({ ...prev, [selectedPetId]: true }));
@@ -173,7 +166,6 @@ const MyListingsPage = () => {
           type: "success",
         });
 
-     
         setListings(
           listings.map((pet) =>
             pet._id === selectedPetId ? { ...pet, status: statusAction === "approved" ? "adopted" : "Available" } : pet
@@ -197,6 +189,11 @@ const MyListingsPage = () => {
     }
   };
 
+  // --- DYNAMIC STATE LOGIC PIPELINE INJECTION ---
+  const totalListings = listings.length;
+  const adoptedListings = listings.filter((pet) => pet.status?.toLowerCase() === "adopted").length;
+  const availableListings = totalListings - adoptedListings;
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -207,7 +204,7 @@ const MyListingsPage = () => {
 
   return (
     <ScrollMotion>
-      <div className="max-w-6xl mx-auto pb-10 px-2 sm:px-4 relative">
+      <div className="max-w-6xl mx-auto pb-10 px-2 sm:px-4 relative space-y-6">
         {toast.show && (
           <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
             {toast.type === "success" ? (
@@ -222,13 +219,14 @@ const MyListingsPage = () => {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        {/* Header Element */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               My Listed Pets
             </h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              Manage the pets you have listed for adoption ({listings.length})
+              Manage the pets you have listed for adoption.
             </p>
           </div>
           <button
@@ -237,6 +235,33 @@ const MyListingsPage = () => {
           >
             + Add New Pet
           </button>
+        </div>
+
+        {/* --- DYNAMIC ADDITION: CUSTOM & PREMIUM CONTRAST-BALANCED COUNTER CARD PANELS --- */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-5 flex items-center justify-between shadow-xs">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Listings</p>
+              <p className="text-2xl font-extrabold text-gray-900 dark:text-white font-mono">{totalListings}</p>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-500/10 flex items-center justify-center text-base">📊</div>
+          </div>
+
+          <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-5 flex items-center justify-between shadow-xs">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Available Status</p>
+              <p className="text-2xl font-extrabold text-emerald-500 dark:text-emerald-400 font-mono">{availableListings}</p>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-base">🐾</div>
+          </div>
+
+          <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl p-5 flex items-center justify-between shadow-xs">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Adopted Home</p>
+              <p className="text-2xl font-extrabold text-amber-500 dark:text-amber-400 font-mono">{adoptedListings}</p>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-base">🎉</div>
+          </div>
         </div>
 
         {listings.length === 0 ? (
@@ -334,7 +359,6 @@ const MyListingsPage = () => {
                     </button>
                   </div>
 
-                 
                   <button
                     disabled={pet.status === "adopted" || actionLoading[pet._id]}
                     onClick={() => handleApproveButtonClick(pet)}
@@ -356,7 +380,6 @@ const MyListingsPage = () => {
           </div>
         )}
 
-        
         {isDeleteModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
             <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl w-full max-w-sm p-6 shadow-xl animate-in zoom-in-95 duration-200">
@@ -385,7 +408,6 @@ const MyListingsPage = () => {
           </div>
         )}
 
-
         {isRequestModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
             <div className="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-2xl w-full max-w-md p-6 shadow-xl animate-in zoom-in-95 duration-200">
@@ -409,7 +431,6 @@ const MyListingsPage = () => {
                 </div>
               ) : activeRequest ? (
                 <div>
-             
                   <div className="mb-4">
                     <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Pet Title</label>
                     <p className="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">
@@ -417,7 +438,6 @@ const MyListingsPage = () => {
                     </p>
                   </div>
 
-              
                   <div className="grid grid-cols-2 gap-4 mb-4 bg-gray-50 dark:bg-zinc-800/40 p-3 rounded-xl border border-gray-100 dark:border-[#30363d]/40">
                     <div>
                       <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Requested By</label>
@@ -433,7 +453,6 @@ const MyListingsPage = () => {
                     </div>
                   </div>
 
-                
                   <div className="mb-4">
                     <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block">Proposed Pickup Date</label>
                     <div className="flex items-center gap-2 mt-1 text-xs text-gray-700 dark:text-gray-300 font-semibold bg-pink-500/5 border border-pink-500/20 px-3 py-2 rounded-xl w-fit">
@@ -442,7 +461,6 @@ const MyListingsPage = () => {
                     </div>
                   </div>
 
-                 
                   <div className="mb-6">
                     <label className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block mb-1">Current Status</label>
                     <span className={`text-[11px] font-bold uppercase px-3 py-1 rounded-full tracking-wide ${
@@ -453,7 +471,6 @@ const MyListingsPage = () => {
                     </span>
                   </div>
 
-              
                   {activeRequest.status !== "approved" && activeRequest.status !== "rejected" ? (
                     <div className="flex gap-3 border-t border-gray-100 dark:border-[#30363d] pt-4">
                       <button
