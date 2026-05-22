@@ -1,11 +1,21 @@
+"use client";
+
 import { Button } from "@heroui/react";
 import { Quote } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const PetCard = ({ feature }) => {
   console.log(feature);
   const { _id } = feature;
+  const router = useRouter();
+
+
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
   return (
     <div className="group relative bg-[#EFE3CA]/30 dark:bg-slate-900 rounded-3xl overflow-hidden border border-[#EFE3CA] dark:border-slate-800 transition-all hover:shadow-2xl dark:hover:shadow-cyan-900/20">
       {/* Image Container */}
@@ -34,11 +44,27 @@ const PetCard = ({ feature }) => {
           ${feature.adoptionFee}
         </p>
 
-        <Link href={`/all-pets/${_id}`}>
-          <Button className={"w-full font-bold text-lg"} variant="outline">
-            View Details
+       
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          <Link href={`/all-pets/${_id}`} className="w-full">
+            <Button className="w-full font-bold text-sm sm:text-base" variant="outline">
+              View Details
+            </Button>
+          </Link>
+
+          <Button 
+            onClick={() => {
+              if (!user) {
+                router.push("/login");
+              } else {
+                router.push(`/all-pets/${_id}`);
+              }
+            }}
+            className="w-full font-bold text-sm sm:text-base bg-[#56B6C6] text-white hover:opacity-90 transition-opacity"
+          >
+            Adopt Now 🐾
           </Button>
-        </Link>
+        </div>
       </div>
     </div>
   );
