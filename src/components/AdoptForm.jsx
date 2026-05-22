@@ -165,6 +165,7 @@ const AdoptForm = ({ pet }) => {
           <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
             Message to Owner
           </label>
+          
           <textarea
             name="message"
             value={message}
