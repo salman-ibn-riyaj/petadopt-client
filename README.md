@@ -9,6 +9,9 @@ The primary purpose of the **PetAdopt Client** is to provide animal lovers and p
 
 ---
 
+<img width="1920" height="5755" alt="screencapture-petadopt-client-flame-vercel-app-2026-06-04-23_49_19" src="https://github.com/user-attachments/assets/5ef451ab-7cf3-4dec-81d2-b409bbaaac01" />
+
+
 ## 🌐 Live URL
 * **Frontend Application:** [https://petadopt-client-flame.vercel.app](https://petadopt-client-flame.vercel.app)
 
