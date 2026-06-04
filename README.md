@@ -26,6 +26,13 @@ The primary purpose of the **PetAdopt Client** is to provide animal lovers and p
 
 ---
 
+## Tech Stack
+
+* **Frontend:** Next.js
+* **Backend:** Express.js
+* **Database:** MongoDB
+* **Animation:** Framer Motion
+
 ## 📦 NPM Packages Used
 * `next` - Production-ready React framework with App Router optimization.
 * `@heroui/react` - Advanced and beautifully crafted component library for modern web interfaces.
